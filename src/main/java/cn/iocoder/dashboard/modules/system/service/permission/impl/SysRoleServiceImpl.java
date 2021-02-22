@@ -2,6 +2,7 @@ package cn.iocoder.dashboard.modules.system.service.permission.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.iocoder.dashboard.common.enums.CommonStatusEnum;
 import cn.iocoder.dashboard.common.exception.util.ServiceExceptionUtil;
 import cn.iocoder.dashboard.common.pojo.PageResult;
@@ -11,8 +12,8 @@ import cn.iocoder.dashboard.modules.system.controller.permission.vo.role.SysRole
 import cn.iocoder.dashboard.modules.system.controller.permission.vo.role.SysRolePageReqVO;
 import cn.iocoder.dashboard.modules.system.controller.permission.vo.role.SysRoleUpdateReqVO;
 import cn.iocoder.dashboard.modules.system.convert.permission.SysRoleConvert;
-import cn.iocoder.dashboard.modules.system.dal.mysql.permission.SysRoleMapper;
 import cn.iocoder.dashboard.modules.system.dal.dataobject.permission.SysRoleDO;
+import cn.iocoder.dashboard.modules.system.dal.mysql.permission.SysRoleMapper;
 import cn.iocoder.dashboard.modules.system.enums.permission.RoleCodeEnum;
 import cn.iocoder.dashboard.modules.system.enums.permission.SysRoleTypeEnum;
 import cn.iocoder.dashboard.modules.system.mq.producer.permission.SysRoleProducer;
@@ -53,7 +54,7 @@ public class SysRoleServiceImpl implements SysRoleService {
     /**
      * 角色缓存
      * key：角色编号 {@link SysRoleDO#getId()}
-     *
+     * <p>
      * 这里声明 volatile 修饰的原因是，每次刷新时，直接修改指向
      */
     private volatile Map<Long, SysRoleDO> roleCache;
@@ -135,6 +136,21 @@ public class SysRoleServiceImpl implements SysRoleService {
         }
         return roleCache.values().stream().filter(roleDO -> ids.contains(roleDO.getId()))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Set<Long> listDataScopeDeptIdsByRoleIdsFromCache(Collection<Long> ids) {
+        Set<Long> dataScopeDeptIdSet = new HashSet<>();
+        if (ObjectUtil.isEmpty(ids)) {
+            return dataScopeDeptIdSet;
+        }
+        roleCache.values()
+                .forEach(roleDO -> {
+                    if (ids.contains(roleDO.getId())) {
+                        dataScopeDeptIdSet.addAll(roleDO.getDataScopeDeptIds());
+                    }
+                });
+        return dataScopeDeptIdSet;
     }
 
     @Override
@@ -237,13 +253,13 @@ public class SysRoleServiceImpl implements SysRoleService {
 
     /**
      * 校验角色的唯一字段是否重复
-     *
+     * <p>
      * 1. 是否存在相同名字的角色
      * 2. 是否存在相同编码的角色
      *
      * @param name 角色名字
      * @param code 角色额编码
-     * @param id 角色编号
+     * @param id   角色编号
      */
     private void checkDuplicateRole(String name, String code, Long id) {
         // 1. 该 name 名字被其它角色所使用

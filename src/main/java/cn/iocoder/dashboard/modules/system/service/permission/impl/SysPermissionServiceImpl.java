@@ -250,6 +250,12 @@ public class SysPermissionServiceImpl implements SysPermissionService {
     }
 
     @Override
+    public Set<Long> getCurrentUserDataPermission() {
+        Set<Long> roleIds = SecurityUtils.getLoginUserRoleIds();
+        return roleService.listDataScopeDeptIdsByRoleIdsFromCache(roleIds);
+    }
+
+    @Override
     public boolean hasPermission(String permission) {
         return hasAnyPermissions(permission);
     }

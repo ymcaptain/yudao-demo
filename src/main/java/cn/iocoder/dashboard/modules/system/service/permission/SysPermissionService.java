@@ -106,4 +106,11 @@ public interface SysPermissionService extends SecurityPermissionFrameworkService
      */
     void processUserDeleted(Long userId);
 
+    /**
+     * 获取当前用户的数据权限
+     *
+     * @return 当前用户的数据权限
+     */
+    Set<Long> getCurrentUserDataPermission();
+
 }

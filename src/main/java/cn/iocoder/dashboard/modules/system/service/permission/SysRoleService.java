@@ -48,6 +48,15 @@ public interface SysRoleService {
      */
     List<SysRoleDO> listRolesFromCache(Collection<Long> ids);
 
+
+    /**
+     * 获得指定角色的数据权限集合
+     *
+     * @param ids 角色编号数组
+     * @return 角色数据权限数据
+     */
+    Set<Long> listDataScopeDeptIdsByRoleIdsFromCache(Collection<Long> ids);
+
     /**
      * 判断角色数组中，是否有管理员
      *
