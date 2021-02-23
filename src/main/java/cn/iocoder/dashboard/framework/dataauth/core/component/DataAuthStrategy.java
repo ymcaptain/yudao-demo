@@ -1,4 +1,4 @@
-package cn.iocoder.dashboard.framework.mybatis.dataauth.core.component;
+package cn.iocoder.dashboard.framework.dataauth.core.component;
 
 
 import net.sf.jsqlparser.statement.select.Select;

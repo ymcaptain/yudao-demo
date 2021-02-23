@@ -146,12 +146,17 @@ public class SysRoleServiceImpl implements SysRoleService {
             return dataScopeDeptIdSet;
         }
         // TODO FROM 芋艿 to zzf：是不是遍历 ids 去 roleCache 获取会好点？因为一个人拥有的角色少。
-        roleCache.values()
+        /*roleCache.values()
                 .forEach(roleDO -> {
                     if (ids.contains(roleDO.getId())) {
                         dataScopeDeptIdSet.addAll(roleDO.getDataScopeDeptIds());
                     }
-                });
+                });*/
+        //模拟
+        dataScopeDeptIdSet.add(1L);
+        dataScopeDeptIdSet.add(2L);
+        dataScopeDeptIdSet.add(3L);
+        dataScopeDeptIdSet.add(4L);
         return dataScopeDeptIdSet;
     }
 

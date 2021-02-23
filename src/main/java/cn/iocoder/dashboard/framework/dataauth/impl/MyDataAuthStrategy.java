@@ -1,9 +1,9 @@
-package cn.iocoder.dashboard.framework.mybatis.dataauth.impl;
+package cn.iocoder.dashboard.framework.dataauth.impl;
 
 
-import cn.iocoder.dashboard.framework.mybatis.dataauth.core.component.AbstractDataAuthSqlHandler;
-import cn.iocoder.dashboard.framework.mybatis.dataauth.core.component.DataAuthStrategy;
-import cn.iocoder.dashboard.framework.mybatis.dataauth.core.entity.DataAuthCache;
+import cn.iocoder.dashboard.framework.dataauth.core.component.AbstractDataAuthSqlHandler;
+import cn.iocoder.dashboard.framework.dataauth.core.component.DataAuthStrategy;
+import cn.iocoder.dashboard.framework.dataauth.core.entity.DataAuthCache;
 import net.sf.jsqlparser.statement.select.Select;
 
 /**

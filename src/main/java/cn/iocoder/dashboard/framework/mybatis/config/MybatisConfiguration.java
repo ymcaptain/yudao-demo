@@ -1,8 +1,8 @@
 package cn.iocoder.dashboard.framework.mybatis.config;
 
-import cn.iocoder.dashboard.framework.mybatis.dataauth.core.component.DataAuthInterceptor;
-import cn.iocoder.dashboard.framework.mybatis.dataauth.core.component.MySqlInjector;
-import cn.iocoder.dashboard.framework.mybatis.dataauth.impl.MyDataAuthStrategy;
+import cn.iocoder.dashboard.framework.dataauth.core.component.DataAuthInterceptor;
+import cn.iocoder.dashboard.framework.dataauth.core.component.DataAuthSqlInjector;
+import cn.iocoder.dashboard.framework.dataauth.impl.MyDataAuthStrategy;
 import com.baomidou.mybatisplus.core.injector.ISqlInjector;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
@@ -35,7 +35,7 @@ public class MybatisConfiguration {
      */
     @Bean
     public ISqlInjector sqlInjector() {
-        return new MySqlInjector();
+        return new DataAuthSqlInjector();
     }
 
 }

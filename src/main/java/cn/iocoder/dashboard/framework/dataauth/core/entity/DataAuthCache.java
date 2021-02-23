@@ -1,6 +1,6 @@
-package cn.iocoder.dashboard.framework.mybatis.dataauth.core.entity;
+package cn.iocoder.dashboard.framework.dataauth.core.entity;
 
-import cn.iocoder.dashboard.framework.mybatis.dataauth.core.component.AbstractDataAuthSqlHandler;
+import cn.iocoder.dashboard.framework.dataauth.core.component.AbstractDataAuthSqlHandler;
 import org.apache.ibatis.mapping.MappedStatement;
 
 import java.util.HashMap;

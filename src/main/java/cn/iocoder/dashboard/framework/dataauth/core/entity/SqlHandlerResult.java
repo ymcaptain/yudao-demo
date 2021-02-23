@@ -1,4 +1,4 @@
-package cn.iocoder.dashboard.framework.mybatis.dataauth.core.entity;
+package cn.iocoder.dashboard.framework.dataauth.core.entity;
 
 import lombok.Getter;
 import lombok.Setter;

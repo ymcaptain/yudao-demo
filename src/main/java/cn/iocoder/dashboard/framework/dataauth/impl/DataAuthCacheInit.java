@@ -1,6 +1,6 @@
-package cn.iocoder.dashboard.framework.mybatis.dataauth.impl;
+package cn.iocoder.dashboard.framework.dataauth.impl;
 
-import cn.iocoder.dashboard.framework.mybatis.dataauth.core.component.DataAuthCacheHelper;
+import cn.iocoder.dashboard.framework.dataauth.core.component.DataAuthCacheHelper;
 import cn.iocoder.dashboard.modules.system.dal.dataobject.user.SysUserDO;
 import cn.iocoder.dashboard.modules.system.service.permission.SysPermissionService;
 import org.springframework.context.ApplicationListener;
@@ -26,7 +26,7 @@ public class DataAuthCacheInit implements ApplicationListener<ContextRefreshedEv
         DataAuthCacheHelper helper = new DataAuthCacheHelper()
                 .setSqlHandler(new MyRoleDataAuthSqlHandler(permissionService))
                 .addTargetEntityClass(SysUserDO.class)
-                .setTargetFieldName(SysUserDO::getDeptId)
+                .setTargetFieldName(SysUserDO::getId)
                 .bind();
         helper.cache();
     }

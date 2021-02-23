@@ -1,7 +1,7 @@
-package cn.iocoder.dashboard.framework.mybatis.dataauth.core.component;
+package cn.iocoder.dashboard.framework.dataauth.core.component;
 
 import cn.hutool.core.util.ReflectUtil;
-import cn.iocoder.dashboard.framework.mybatis.dataauth.core.entity.DataAuthCache;
+import cn.iocoder.dashboard.framework.dataauth.core.entity.DataAuthCache;
 import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
 import com.baomidou.mybatisplus.extension.plugins.inner.InnerInterceptor;
 import lombok.extern.slf4j.Slf4j;
@@ -50,14 +50,14 @@ public class DataAuthInterceptor implements InnerInterceptor {
             methodName = id;
         }
         if (needAuthCheck(resource, methodName, id)) {
-            log.debug("sql before parsed: " + boundSql.getSql());
+            log.warn("sql before parsed: " + boundSql.getSql());
             Class<?> entityClass = DataAuthCache.resource2EntityClassMap.get(resource);
             try {
                 Select selectStatement = (Select) CCJSqlParserUtil.parse(boundSql.getSql());
                 dataAuthStrategy.doParse(selectStatement, entityClass);
 
                 ReflectUtil.setFieldValue(boundSql, "sql", selectStatement.toString());
-                log.debug("sql after parsed: " + boundSql.getSql());
+                log.warn("sql after parsed: " + boundSql.getSql());
 
             } catch (JSQLParserException e) {
                 throw new SQLException("sql role limit fail: sql parse fail.");
@@ -83,7 +83,7 @@ public class DataAuthInterceptor implements InnerInterceptor {
             result = ObjectUtils.isEmpty(noNeedAuthMethod) || !noNeedAuthMethod.contains(methodName);
         } else {
             Set<String> needAuthMethod = DataAuthCache.needAuthMethodMap.get(resource);
-            result = ObjectUtils.isNotEmpty(needAuthMethod) && !needAuthMethod.contains(methodName);
+            result = ObjectUtils.isNotEmpty(needAuthMethod) && needAuthMethod.contains(methodName);
         }
 
         if (result) {

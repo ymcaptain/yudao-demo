@@ -1,7 +1,7 @@
-package cn.iocoder.dashboard.framework.mybatis.dataauth.impl;
+package cn.iocoder.dashboard.framework.dataauth.impl;
 
-import cn.iocoder.dashboard.framework.mybatis.dataauth.core.component.AbstractDataAuthSqlHandler;
-import cn.iocoder.dashboard.framework.mybatis.dataauth.core.component.getter.TargetDataGetter;
+import cn.iocoder.dashboard.framework.dataauth.core.component.AbstractDataAuthSqlHandler;
+import cn.iocoder.dashboard.framework.dataauth.core.component.getter.TargetDataGetter;
 import cn.iocoder.dashboard.modules.system.dal.dataobject.user.SysUserDO;
 import cn.iocoder.dashboard.modules.system.service.permission.SysPermissionService;
 import net.sf.jsqlparser.expression.Expression;

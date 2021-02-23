@@ -1,6 +1,8 @@
 package cn.iocoder.dashboard.modules.system.dal.mysql.user;
 
 import cn.iocoder.dashboard.common.pojo.PageResult;
+import cn.iocoder.dashboard.framework.dataauth.core.annotion.DataAuth;
+import cn.iocoder.dashboard.framework.dataauth.core.annotion.DataAuthIgnore;
 import cn.iocoder.dashboard.framework.mybatis.core.mapper.BaseMapperX;
 import cn.iocoder.dashboard.framework.mybatis.core.query.QueryWrapperX;
 import cn.iocoder.dashboard.modules.system.controller.user.vo.user.SysUserExportReqVO;
@@ -27,6 +29,7 @@ public interface SysUserMapper extends BaseMapperX<SysUserDO> {
         return selectOne(new QueryWrapper<SysUserDO>().eq("email", email));
     }
 
+    @DataAuth
     default PageResult<SysUserDO> selectPage(SysUserPageReqVO reqVO, Collection<Long> deptIds) {
         return selectPage(reqVO, new QueryWrapperX<SysUserDO>()
                 .likeIfPresent("username", reqVO.getUsername())

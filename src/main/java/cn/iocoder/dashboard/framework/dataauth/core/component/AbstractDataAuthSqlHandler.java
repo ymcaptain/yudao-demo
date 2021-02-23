@@ -1,9 +1,9 @@
-package cn.iocoder.dashboard.framework.mybatis.dataauth.core.component;
+package cn.iocoder.dashboard.framework.dataauth.core.component;
 
-import cn.iocoder.dashboard.framework.mybatis.dataauth.core.component.getter.DataGetter;
-import cn.iocoder.dashboard.framework.mybatis.dataauth.core.entity.DataAuthCache;
-import cn.iocoder.dashboard.framework.mybatis.dataauth.core.entity.DataAuthConstants;
-import cn.iocoder.dashboard.framework.mybatis.dataauth.core.entity.SqlHandlerResult;
+import cn.iocoder.dashboard.framework.dataauth.core.component.getter.DataGetter;
+import cn.iocoder.dashboard.framework.dataauth.core.entity.DataAuthCache;
+import cn.iocoder.dashboard.framework.dataauth.core.entity.DataAuthConstants;
+import cn.iocoder.dashboard.framework.dataauth.core.entity.SqlHandlerResult;
 import com.baomidou.mybatisplus.core.metadata.TableFieldInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;

@@ -1,7 +1,7 @@
-package cn.iocoder.dashboard.framework.mybatis.dataauth.core.component;
+package cn.iocoder.dashboard.framework.dataauth.core.component;
 
-import cn.iocoder.dashboard.framework.mybatis.dataauth.core.entity.DataAuthCache;
-import cn.iocoder.dashboard.framework.mybatis.dataauth.core.entity.DataAuthConstants;
+import cn.iocoder.dashboard.framework.dataauth.core.entity.DataAuthCache;
+import cn.iocoder.dashboard.framework.dataauth.core.entity.DataAuthConstants;
 import com.baomidou.mybatisplus.core.metadata.TableFieldInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
@@ -36,7 +36,7 @@ public class DataAuthCacheHelper {
     private AbstractDataAuthSqlHandler<?> sqlHandler;
 
     /**
-     *
+     * 对象表 用于与数据权限限制的表关联 的字段名
      */
     private String targetFieldName;
 
@@ -119,7 +119,6 @@ public class DataAuthCacheHelper {
      * 加入到缓存中
      */
     public void cache() {
-        this.bind();
         sqlHandler2TargetClass2FieldNameMap.forEach((key, val) -> {
             DataAuthCache.sqlHandlerMap.put(key.getId(), key);
             DataAuthCache.sqlHandlerId2TargetClass2FieldNameMap.put(key.getId(), val);

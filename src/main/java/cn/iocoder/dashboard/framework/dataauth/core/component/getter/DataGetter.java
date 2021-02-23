@@ -1,4 +1,4 @@
-package cn.iocoder.dashboard.framework.mybatis.dataauth.core.component.getter;
+package cn.iocoder.dashboard.framework.dataauth.core.component.getter;
 
 /**
  * 获取数据抽象对象

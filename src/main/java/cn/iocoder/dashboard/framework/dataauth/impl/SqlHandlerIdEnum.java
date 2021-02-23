@@ -1,4 +1,4 @@
-package cn.iocoder.dashboard.framework.mybatis.dataauth.impl;
+package cn.iocoder.dashboard.framework.dataauth.impl;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
