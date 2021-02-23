@@ -17,18 +17,18 @@ import java.util.Set;
  * @author zzf
  * @date 2021/2/5 15:02
  */
-@Slf4j
+@Slf4j // TODO FROM 芋艿 to zzf：类名可能需要在想想哈
 public class MySqlInjector extends DefaultSqlInjector {
 
     @Override
     public void inspectInject(MapperBuilderAssistant builderAssistant, Class<?> mapperClass) {
         String resource = getResource(mapperClass);
 
-
+        // TODO FROM 芋艿 to zzf：复数
         Set<String> needAuthMethod = new HashSet<>();
         Set<String> notNeedAuthMethod = new HashSet<>();
 
-        if (mapperClass.getAnnotation(DataAuth.class) != null) {
+        if (mapperClass.getAnnotation(DataAuth.class) != null) { // TODO FROM 芋艿 to zzf：可以考虑使用 isAnnotationPresent 方法，简洁
             DataAuthCache.needAuthResource.add(resource);
 
             for (Method method : mapperClass.getMethods()) {
@@ -58,7 +58,8 @@ public class MySqlInjector extends DefaultSqlInjector {
     /**
      * copy from{@link MapperAnnotationBuilder} at line 109 , {@link MybatisMapperAnnotationBuilder} at line 84
      */
-    private String getResource(Class<?> mapperClass) {
+    private static String getResource(Class<?> mapperClass) {
         return mapperClass.getName().replace('.', '/') + ".java (best guess)";
     }
+
 }

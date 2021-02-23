@@ -19,7 +19,7 @@ import javax.annotation.Resource;
 public class DataAuthCacheInit implements ApplicationListener<ContextRefreshedEvent> {
 
     @Resource
-    SysPermissionService permissionService;
+    private SysPermissionService permissionService;
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
@@ -30,4 +30,5 @@ public class DataAuthCacheInit implements ApplicationListener<ContextRefreshedEv
                 .bind();
         helper.cache();
     }
+
 }

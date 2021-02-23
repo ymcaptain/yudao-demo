@@ -2,6 +2,7 @@ package cn.iocoder.dashboard.modules.system.service.permission.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.iocoder.dashboard.common.enums.CommonStatusEnum;
 import cn.iocoder.dashboard.common.exception.util.ServiceExceptionUtil;
@@ -144,6 +145,7 @@ public class SysRoleServiceImpl implements SysRoleService {
         if (ObjectUtil.isEmpty(ids)) {
             return dataScopeDeptIdSet;
         }
+        // TODO FROM 芋艿 to zzf：是不是遍历 ids 去 roleCache 获取会好点？因为一个人拥有的角色少。
         roleCache.values()
                 .forEach(roleDO -> {
                     if (ids.contains(roleDO.getId())) {
