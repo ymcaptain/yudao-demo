@@ -2,7 +2,6 @@ package cn.iocoder.dashboard.modules.system.service.permission.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.iocoder.dashboard.common.enums.CommonStatusEnum;
 import cn.iocoder.dashboard.common.exception.util.ServiceExceptionUtil;
@@ -146,17 +145,20 @@ public class SysRoleServiceImpl implements SysRoleService {
             return dataScopeDeptIdSet;
         }
         // TODO FROM 芋艿 to zzf：是不是遍历 ids 去 roleCache 获取会好点？因为一个人拥有的角色少。
-        /*roleCache.values()
+        //  roleCache.values() = List<SysRoleDO>, 遍历ids没法直接与之比较，还是得遍历roleCache.values()才能比较。
+        roleCache.values()
                 .forEach(roleDO -> {
                     if (ids.contains(roleDO.getId())) {
                         dataScopeDeptIdSet.addAll(roleDO.getDataScopeDeptIds());
                     }
-                });*/
-        //模拟
-        dataScopeDeptIdSet.add(1L);
-        dataScopeDeptIdSet.add(2L);
-        dataScopeDeptIdSet.add(3L);
-        dataScopeDeptIdSet.add(4L);
+                });
+        //TODO 模拟数据，后续删除
+        if (dataScopeDeptIdSet.size() == 0) {
+            dataScopeDeptIdSet.add(1L);
+            dataScopeDeptIdSet.add(2L);
+            dataScopeDeptIdSet.add(3L);
+            dataScopeDeptIdSet.add(4L);
+        }
         return dataScopeDeptIdSet;
     }
 

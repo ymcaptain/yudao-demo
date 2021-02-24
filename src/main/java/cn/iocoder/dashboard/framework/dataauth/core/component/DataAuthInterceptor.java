@@ -2,7 +2,6 @@ package cn.iocoder.dashboard.framework.dataauth.core.component;
 
 import cn.hutool.core.util.ReflectUtil;
 import cn.iocoder.dashboard.framework.dataauth.core.entity.DataAuthCache;
-import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
 import com.baomidou.mybatisplus.extension.plugins.inner.InnerInterceptor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.JSQLParserException;
@@ -51,7 +50,7 @@ public class DataAuthInterceptor implements InnerInterceptor {
         }
         if (needAuthCheck(resource, methodName, id)) {
             log.warn("sql before parsed: " + boundSql.getSql());
-            Class<?> entityClass = DataAuthCache.resource2EntityClassMap.get(resource);
+            Class<?> entityClass = DataAuthCache.getEntityClassByResource(resource);
             try {
                 Select selectStatement = (Select) CCJSqlParserUtil.parse(boundSql.getSql());
                 dataAuthStrategy.doParse(selectStatement, entityClass);
@@ -78,12 +77,10 @@ public class DataAuthInterceptor implements InnerInterceptor {
             return false;
         }
         boolean result;
-        if (DataAuthCache.needAuthResource.contains(resource)) {
-            Set<String> noNeedAuthMethod = DataAuthCache.notNeedAuthMethodMap.get(resource);
-            result = ObjectUtils.isEmpty(noNeedAuthMethod) || !noNeedAuthMethod.contains(methodName);
+        if (DataAuthCache.isNeedAuthResource(resource)) {
+            result = !DataAuthCache.isNotNeedAuthMethod(resource, methodName);
         } else {
-            Set<String> needAuthMethod = DataAuthCache.needAuthMethodMap.get(resource);
-            result = ObjectUtils.isNotEmpty(needAuthMethod) && needAuthMethod.contains(methodName);
+            result = DataAuthCache.isNeedAuthMethod(resource, methodName);
         }
 
         if (result) {

@@ -77,16 +77,18 @@ public class DataAuthCacheHelper {
         valueCheck();
         Map<Class<?>, String> targetClass2FieldNameMap = new HashMap<>();
         targetEntityClassSet.forEach(entityClass -> {
+            //直接从MP的缓存中获取实体类对应的表信息，查询实体类字段对应的表字段名
             TableInfo tableInfo = TableInfoHelper.getTableInfo(entityClass);
+            //TableInfo中 主键和其他字段分别存储，因此这里要分别判断。
             if (targetFieldName.equals(tableInfo.getKeyProperty())) {
-                targetClass2FieldNameMap.put(entityClass, targetFieldName);
+                targetClass2FieldNameMap.put(entityClass, tableInfo.getKeyColumn());
             } else {
-                Optional<String> whereFiledOptional = tableInfo.getFieldList().stream()
+                Optional<String> relationColumnOptional = tableInfo.getFieldList().stream()
                         .filter(s -> s.getProperty().equals(targetFieldName))
                         .map(TableFieldInfo::getColumn)
                         .findFirst();
-                if (whereFiledOptional.isPresent()) {
-                    this.targetFieldName = whereFiledOptional.get();
+                if (relationColumnOptional.isPresent()) {
+                    targetClass2FieldNameMap.put(entityClass, relationColumnOptional.get());
                 } else {
                     throw new IllegalArgumentException(DataAuthConstants.notExistsFieldInfo(targetFieldName));
                 }
@@ -120,8 +122,8 @@ public class DataAuthCacheHelper {
      */
     public void cache() {
         sqlHandler2TargetClass2FieldNameMap.forEach((key, val) -> {
-            DataAuthCache.sqlHandlerMap.put(key.getId(), key);
-            DataAuthCache.sqlHandlerId2TargetClass2FieldNameMap.put(key.getId(), val);
+            DataAuthCache.addSqlHandler(key);
+            DataAuthCache.addSqlHandlerId2TargetClass2FieldNameMap(key.getId(), val);
         });
     }
 

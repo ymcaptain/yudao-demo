@@ -34,7 +34,7 @@ public class DataAuthSqlInjector extends DefaultSqlInjector {
         Set<String> notNeedAuthMethodSet = new HashSet<>();
 
         if (mapperClass.isAnnotationPresent(DataAuth.class)) { // TODO FROM 芋艿 to zzf：可以考虑使用 isAnnotationPresent 方法，简洁 DONE
-            DataAuthCache.needAuthResource.add(resource);
+            DataAuthCache.addNeedAuthResource(resource);
 
             for (Method method : mapperClass.getMethods()) {
                 needAuthMethodSet.add(method.getName());
@@ -50,11 +50,11 @@ public class DataAuthSqlInjector extends DefaultSqlInjector {
             }
         }
         if (needAuthMethodSet.size() > 0) {
-            DataAuthCache.needAuthMethodMap.put(resource, needAuthMethodSet);
-            DataAuthCache.resource2EntityClassMap.put(resource, extractModelClass(mapperClass));
+            DataAuthCache.addNeedAuthMethod(resource, needAuthMethodSet);
+            DataAuthCache.addResource2EntityClassMap(resource, extractModelClass(mapperClass));
         }
         if (notNeedAuthMethodSet.size() > 0) {
-            DataAuthCache.notNeedAuthMethodMap.put(resource, notNeedAuthMethodSet);
+            DataAuthCache.addNotNeedAuthMethod(resource, notNeedAuthMethodSet);
         }
         super.inspectInject(builderAssistant, mapperClass);
     }

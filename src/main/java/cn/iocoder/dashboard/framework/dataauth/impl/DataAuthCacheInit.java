@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 
 /**
- * 添加数据权限限制配置
+ * 初始化添加数据权限限制配置
  *
  * @author zzf
  * @date 2020/12/21 11:45
@@ -30,5 +30,4 @@ public class DataAuthCacheInit implements ApplicationListener<ContextRefreshedEv
                 .bind();
         helper.cache();
     }
-
 }
