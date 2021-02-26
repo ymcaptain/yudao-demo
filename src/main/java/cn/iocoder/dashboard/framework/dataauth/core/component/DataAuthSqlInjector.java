@@ -3,11 +3,10 @@ package cn.iocoder.dashboard.framework.dataauth.core.component;
 import cn.iocoder.dashboard.framework.dataauth.core.annotion.DataAuth;
 import cn.iocoder.dashboard.framework.dataauth.core.annotion.DataAuthIgnore;
 import cn.iocoder.dashboard.framework.dataauth.core.entity.DataAuthCache;
-import com.baomidou.mybatisplus.core.MybatisMapperAnnotationBuilder;
+import cn.iocoder.dashboard.framework.dataauth.core.util.ResourceUtils;
 import com.baomidou.mybatisplus.core.injector.DefaultSqlInjector;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.builder.MapperBuilderAssistant;
-import org.apache.ibatis.builder.annotation.MapperAnnotationBuilder;
 
 import java.lang.reflect.Method;
 import java.util.HashSet;
@@ -27,7 +26,7 @@ public class DataAuthSqlInjector extends DefaultSqlInjector {
 
     @Override
     public void inspectInject(MapperBuilderAssistant builderAssistant, Class<?> mapperClass) {
-        String resource = getResource(mapperClass);
+        String resource = ResourceUtils.getResourceKey(mapperClass);
 
         // TODO FROM 芋艿 to zzf：复数  DONE
         Set<String> needAuthMethodSet = new HashSet<>();
@@ -57,13 +56,6 @@ public class DataAuthSqlInjector extends DefaultSqlInjector {
             DataAuthCache.addNotNeedAuthMethod(resource, notNeedAuthMethodSet);
         }
         super.inspectInject(builderAssistant, mapperClass);
-    }
-
-    /**
-     * copy from{@link MapperAnnotationBuilder} at line 109 , {@link MybatisMapperAnnotationBuilder} at line 84
-     */
-    private static String getResource(Class<?> mapperClass) {
-        return mapperClass.getName().replace('.', '/') + ".java (best guess)";
     }
 
 }

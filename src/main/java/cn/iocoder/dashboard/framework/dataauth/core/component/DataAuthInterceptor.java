@@ -2,6 +2,7 @@ package cn.iocoder.dashboard.framework.dataauth.core.component;
 
 import cn.hutool.core.util.ReflectUtil;
 import cn.iocoder.dashboard.framework.dataauth.core.entity.DataAuthCache;
+import cn.iocoder.dashboard.framework.dataauth.core.util.ResourceUtils;
 import com.baomidou.mybatisplus.extension.plugins.inner.InnerInterceptor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.JSQLParserException;
@@ -40,7 +41,7 @@ public class DataAuthInterceptor implements InnerInterceptor {
     public void beforeQuery(Executor executor, MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) throws SQLException {
         String id = ms.getId();
 
-        String resource = ms.getResource();
+        String resource = ResourceUtils.getResourceKey(ms.getResource());
 
         String methodName;
         if (id.contains(".")) {
