@@ -20,6 +20,7 @@ import org.springframework.validation.annotation.Validated;
 import javax.annotation.Resource;
 
 import java.util.List;
+import java.util.Objects;
 
 import static cn.iocoder.yudao.adminserver.modules.infra.enums.InfErrorCodeConstants.*;
 
@@ -57,6 +58,20 @@ public class InfConfigServiceImpl implements InfConfigService {
         // 更新参数配置
         InfConfigDO updateObj = InfConfigConvert.INSTANCE.convert(reqVO);
         configMapper.updateById(updateObj);
+        // 发送刷新消息
+        configProducer.sendConfigRefreshMessage();
+    }
+
+    @Override
+    public void updateValueByKey(String key, String value) {
+        InfConfigDO config = configMapper.selectByKey(key);
+        if (Objects.isNull(config)) {
+            throw ServiceExceptionUtil.exception(CONFIG_NOT_EXISTS);
+        }
+        InfConfigDO updateDo = new InfConfigDO();
+        updateDo.setId(config.getId());
+        updateDo.setValue(value);
+        configMapper.updateById(updateDo);
         // 发送刷新消息
         configProducer.sendConfigRefreshMessage();
     }

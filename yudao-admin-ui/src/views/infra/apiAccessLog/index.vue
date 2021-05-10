@@ -37,6 +37,10 @@
     <!-- 操作工具栏 -->
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
+        <el-button :type="enable?'info':'primary'" plain :icon="enable?'el-icon-close':'el-icon-check'" size="mini" @click="enableHandler"
+                   v-hasPermi="['infra:api-access-log:export']">{{enable?'关闭日志':'开启日志'}}</el-button>
+      </el-col>
+      <el-col :span="1.5">
         <el-button type="warning" plain icon="el-icon-download" size="mini" @click="handleExport"
                    v-hasPermi="['infra:api-access-log:export']">导出</el-button>
       </el-col>
@@ -114,7 +118,8 @@
 
 <script>
 import { getApiAccessLogPage, exportApiAccessLogExcel } from "@/api/infra/apiAccessLog";
-
+import { getConfigKey,updateValueByKey } from "@/api/infra/config";
+import { InfConfigKeyEnum } from "@/utils/constants";
 export default {
   name: "ApiAccessLog",
   components: {
@@ -125,6 +130,8 @@ export default {
       loading: true,
       // 显示搜索条件
       showSearch: true,
+      // 是否开启
+      enable: false,
       // 总条数
       total: 0,
       // API 访问日志列表
@@ -150,9 +157,25 @@ export default {
     };
   },
   created() {
+    this.getEnableConfig();
     this.getList();
   },
   methods: {
+    //开启关闭日志
+    enableHandler(){
+        let data = new FormData();
+        data.append("key",InfConfigKeyEnum.API_LOG_KEY);
+        data.append("value",this.enable?false:true);
+        updateValueByKey(data).then(response => {
+           this.msgSuccess(this.enable?"关闭成功":"开启成功");
+           this.getEnableConfig();
+        })
+    },
+    getEnableConfig(){
+        getConfigKey(InfConfigKeyEnum.API_LOG_KEY).then(response => {
+          this.enable = (response.data == "true");
+        })
+    },
     /** 查询列表 */
     getList() {
       this.loading = true;

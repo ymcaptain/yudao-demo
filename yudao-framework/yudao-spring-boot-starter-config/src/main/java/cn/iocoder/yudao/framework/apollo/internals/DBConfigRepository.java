@@ -135,7 +135,7 @@ public class DBConfigRepository extends AbstractConfigRepository {
 
     private Properties buildProperties(List<ConfigRespDTO> configs) {
         Properties properties = propertiesFactory.getPropertiesInstance();
-        configs.stream().filter(ConfigRespDTO::getDeleted) // 过滤掉被删除的配置
+        configs.stream().filter(item -> !item.getDeleted()) // 过滤掉被删除的配置
                 .forEach(config -> properties.put(config.getKey(), config.getValue()));
         return properties;
     }

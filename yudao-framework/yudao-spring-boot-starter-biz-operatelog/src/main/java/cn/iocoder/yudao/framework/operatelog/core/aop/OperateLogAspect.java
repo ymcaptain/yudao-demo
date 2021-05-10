@@ -4,6 +4,7 @@ import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.servlet.ServletUtil;
+import cn.iocoder.yudao.framework.common.enums.ConfigKeyConstants;
 import cn.iocoder.yudao.framework.common.pojo.CommonResult;
 import cn.iocoder.yudao.framework.operatelog.core.annotations.OperateLog;
 import cn.iocoder.yudao.framework.operatelog.core.dto.OperateLogCreateReqDTO;
@@ -21,6 +22,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -65,18 +67,30 @@ public class OperateLogAspect {
      */
     private static final ThreadLocal<Map<String, Object>> EXTS = new ThreadLocal<>();
 
+    /**
+     * operateLog 开关
+     */
+    @Value(ConfigKeyConstants.SPRING_YUDAO_OPERATE_LOG_KEY)
+    private Boolean isEnable;
+
     @Resource
     private OperateLogFrameworkService operateLogFrameworkService;
 
     @Around("@annotation(apiOperation)")
     public Object around(ProceedingJoinPoint joinPoint, ApiOperation apiOperation) throws Throwable {
         // 可能也添加了 @ApiOperation 注解
+        if(!isEnable){
+            return null;
+        }
         OperateLog operateLog = getMethodAnnotation(joinPoint, OperateLog.class);
         return around0(joinPoint, operateLog, apiOperation);
     }
 
     @Around("!@annotation(io.swagger.annotations.ApiOperation) && @annotation(operateLog)") // 兼容处理，只添加 @OperateLog 注解的情况
     public Object around(ProceedingJoinPoint joinPoint, OperateLog operateLog) throws Throwable {
+        if(!isEnable){
+            return null;
+        }
         return around0(joinPoint, operateLog, null);
     }
 
