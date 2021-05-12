@@ -33,6 +33,9 @@ import {
 import Pagination from "@/components/Pagination";
 // 自定义表格工具扩展
 import RightToolbar from "@/components/RightToolbar"
+
+import LogSwitch from "@/components/LogSwitch";
+
 // 代码高亮插件
 // import hljs from 'highlight.js'
 // import 'highlight.js/styles/github-gist.css'
@@ -73,6 +76,7 @@ Vue.prototype.msgInfo = function (msg) {
 // 全局组件挂载
 Vue.component('Pagination', Pagination)
 Vue.component('RightToolbar', RightToolbar)
+Vue.component('LogSwitch', LogSwitch)
 
 Vue.use(permission)
 // Vue.use(hljs.vuePlugin);

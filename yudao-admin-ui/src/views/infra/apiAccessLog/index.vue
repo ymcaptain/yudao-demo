@@ -37,14 +37,12 @@
     <!-- 操作工具栏 -->
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <log-switch :ckey="InfConfigKeyEnum.API_LOG_KEY" 
-        :permissions="['infra:api-access-log:export','infra:api-access-log:asd']"/>
-        <!-- <el-button :type="enable?'info':'primary'" plain :icon="enable?'el-icon-close':'el-icon-check'" size="mini" @click="enableHandler"
-                   v-hasPermi="['infra:api-access-log:export']">{{enable?'关闭日志':'开启日志'}}</el-button> -->
-      </el-col>
-      <el-col :span="1.5">
         <el-button type="warning" plain icon="el-icon-download" size="mini" @click="handleExport"
                    v-hasPermi="['infra:api-access-log:export']">导出</el-button>
+      </el-col>
+      <el-col :span="1.5">
+        <log-switch :config-key="InfConfigKeyEnum.API_LOG_KEY" 
+        :permissions="['infra:api-access-log:export']" open-text="开启日志" close-text="关闭日志"/>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
@@ -120,12 +118,8 @@
 
 <script>
 import { getApiAccessLogPage, exportApiAccessLogExcel } from "@/api/infra/apiAccessLog";
-import LogSwitch from "@/components/LogSwitch";
 export default {
   name: "ApiAccessLog",
-  components: {
-    LogSwitch
-  },
   data() {
     return {
       // 遮罩层

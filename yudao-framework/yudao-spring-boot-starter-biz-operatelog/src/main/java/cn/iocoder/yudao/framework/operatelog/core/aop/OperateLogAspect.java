@@ -4,6 +4,7 @@ import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.servlet.ServletUtil;
+import cn.iocoder.yudao.framework.common.config.util.InfConfigUtil;
 import cn.iocoder.yudao.framework.common.enums.ConfigKeyConstants;
 import cn.iocoder.yudao.framework.common.pojo.CommonResult;
 import cn.iocoder.yudao.framework.operatelog.core.annotations.OperateLog;
@@ -67,30 +68,18 @@ public class OperateLogAspect {
      */
     private static final ThreadLocal<Map<String, Object>> EXTS = new ThreadLocal<>();
 
-    /**
-     * operateLog 开关
-     */
-    @Value(ConfigKeyConstants.SPRING_YUDAO_OPERATE_LOG_KEY)
-    private Boolean isEnable;
-
     @Resource
     private OperateLogFrameworkService operateLogFrameworkService;
 
     @Around("@annotation(apiOperation)")
     public Object around(ProceedingJoinPoint joinPoint, ApiOperation apiOperation) throws Throwable {
         // 可能也添加了 @ApiOperation 注解
-        if(!isEnable){
-            return null;
-        }
         OperateLog operateLog = getMethodAnnotation(joinPoint, OperateLog.class);
         return around0(joinPoint, operateLog, apiOperation);
     }
 
     @Around("!@annotation(io.swagger.annotations.ApiOperation) && @annotation(operateLog)") // 兼容处理，只添加 @OperateLog 注解的情况
     public Object around(ProceedingJoinPoint joinPoint, OperateLog operateLog) throws Throwable {
-        if(!isEnable){
-            return null;
-        }
         return around0(joinPoint, operateLog, null);
     }
 
@@ -100,6 +89,10 @@ public class OperateLogAspect {
         try {
             // 执行原有方法
             Object result = joinPoint.proceed();
+            // 是否记录操作日志
+            if(!InfConfigUtil.operateLogEnable()){
+                return result;
+            }
             // 记录正常执行时的操作日志
             this.log(joinPoint, operateLog, apiOperation, startTime, result, null);
             return result;

@@ -7,6 +7,7 @@ import cn.hutool.extra.servlet.ServletUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import cn.iocoder.yudao.framework.apilog.core.service.ApiAccessLogFrameworkService;
 import cn.iocoder.yudao.framework.apilog.core.service.dto.ApiAccessLogCreateDTO;
+import cn.iocoder.yudao.framework.common.config.util.InfConfigUtil;
 import cn.iocoder.yudao.framework.common.enums.ConfigKeyConstants;
 import cn.iocoder.yudao.framework.common.exception.enums.GlobalErrorCodeConstants;
 import cn.iocoder.yudao.framework.common.pojo.CommonResult;
@@ -62,23 +63,18 @@ public class ApiAccessLogFilter extends OncePerRequestFilter {
             // 继续过滤器
             filterChain.doFilter(request, response);
             // api log 开关
-            if(isEnable(ConfigKeyConstants.YUDAO_WEB_API_LOG_ENABLE_KEY)){
+            if(InfConfigUtil.apiLogEnable()){
                 // 正常执行，记录日志
                 createApiAccessLog(request, beginTim, queryString, requestBody, null);
             }
         } catch (Exception ex) {
             // api log异常日志开关
-            if(isEnable(ConfigKeyConstants.YUDAO_WEB_API_ERROR_LOG_ENABLE_KEY)){
+            if(InfConfigUtil.apiErrorLogEnable()){
                 // 异常执行，记录日志
                 createApiAccessLog(request, beginTim, queryString, requestBody, ex);
             }
             throw ex;
         }
-    }
-
-    private boolean isEnable(String key){
-        String enable = SpringUtil.getProperty(key);
-        return Boolean.parseBoolean(StrUtil.isBlank(enable)?Boolean.TRUE.toString():enable);
     }
 
     private void createApiAccessLog(HttpServletRequest request, Date beginTime,

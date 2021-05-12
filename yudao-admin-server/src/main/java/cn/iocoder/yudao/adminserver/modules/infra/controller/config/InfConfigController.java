@@ -1,10 +1,11 @@
 package cn.iocoder.yudao.adminserver.modules.infra.controller.config;
 
-import cn.hutool.core.util.StrUtil;
 import cn.iocoder.yudao.adminserver.modules.infra.controller.config.vo.*;
 import cn.iocoder.yudao.adminserver.modules.infra.convert.config.InfConfigConvert;
 import cn.iocoder.yudao.adminserver.modules.infra.dal.dataobject.config.InfConfigDO;
 import cn.iocoder.yudao.adminserver.modules.infra.service.config.InfConfigService;
+import cn.iocoder.yudao.framework.common.config.enums.InfConfigEnum;
+import cn.iocoder.yudao.framework.common.config.util.InfConfigUtil;
 import cn.iocoder.yudao.framework.common.pojo.CommonResult;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.framework.excel.core.util.ExcelUtils;
@@ -22,6 +23,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 import static cn.iocoder.yudao.adminserver.modules.infra.enums.InfErrorCodeConstants.CONFIG_GET_VALUE_ERROR_IF_SENSITIVE;
 import static cn.iocoder.yudao.framework.common.exception.util.ServiceExceptionUtil.exception;
@@ -85,7 +87,12 @@ public class InfConfigController {
     public CommonResult<String> getConfigKey(@RequestParam("key") String key) {
         InfConfigDO config = configService.getConfigByKey(key);
         if (config == null) {
-            return null;
+            InfConfigEnum initConfigEnum = InfConfigUtil.getInitConfigEnum(key);
+            if(Objects.nonNull(initConfigEnum)){
+                config = InfConfigConvert.INSTANCE.convert(initConfigEnum);
+            }else{
+                return null;
+            }
         }
         if (config.getSensitive()) {
             throw exception(CONFIG_GET_VALUE_ERROR_IF_SENSITIVE);
