@@ -112,7 +112,7 @@ public class ValidateHandlerHelper {
                 } else {
                     fieldComment = field.getName();
                 }
-                String msg = fieldComment + handlerOptional.get().getResultMsgWhenInvalid();
+                String msg = fieldComment + validate;
                 CustomConstraintDescriptor<?> customConstraintDescriptor =
                         new CustomConstraintDescriptor<>(field.getAnnotation(handlerOptional.get().getAnnotation()));
                 return CustomConstraintViolation.of(rootBean, msg, propertyPath, fieldValue, customConstraintDescriptor);

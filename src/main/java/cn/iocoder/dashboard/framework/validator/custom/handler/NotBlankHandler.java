@@ -12,6 +12,8 @@ import javax.validation.constraints.NotBlank;
  */
 public class NotBlankHandler implements ValidateAnnotationHandler<NotBlank> {
 
+    private static final String MSG = "格式错误或者没有有效字符!";
+
     @Override
     public Class<NotBlank> getAnnotation() {
         return NotBlank.class;
@@ -20,13 +22,9 @@ public class NotBlankHandler implements ValidateAnnotationHandler<NotBlank> {
     @Override
     public String validate(NotBlank validateAnnotation, Object fieldValue) {
         if(StrUtil.isBlankIfStr(fieldValue)) {
-            return getResultMsgWhenInvalid();
+            return MSG;
         }
         return null;
     }
 
-    @Override
-    public String getResultMsgWhenInvalid() {
-        return "格式错误或者没有有效字符!";
-    }
 }

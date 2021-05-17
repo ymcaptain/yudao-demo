@@ -13,6 +13,7 @@ import javax.validation.constraints.NotNull;
  */
 public class NotNullHandler implements ValidateAnnotationHandler<NotNull> {
 
+    private static final String MSG = "必传!";
 
     @Override
     public Class<NotNull> getAnnotation() {
@@ -22,13 +23,8 @@ public class NotNullHandler implements ValidateAnnotationHandler<NotNull> {
     @Override
     public String validate(NotNull validateAnnotation, Object fieldValue) {
         if (ObjectUtil.isNull(fieldValue)) {
-            return getResultMsgWhenInvalid();
+            return MSG;
         }
         return null;
-    }
-
-    @Override
-    public String getResultMsgWhenInvalid() {
-        return "必传!";
     }
 }

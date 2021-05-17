@@ -57,9 +57,5 @@ public interface ValidateAnnotationHandler<T extends Annotation> {
      */
     String validate(T validateAnnotation, Object fieldValue);
 
-    /**
-     * @return 消息模板
-     */
-    String getResultMsgWhenInvalid();
 
 }

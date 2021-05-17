@@ -12,6 +12,8 @@ import javax.validation.constraints.NotEmpty;
  */
 public class NotEmptyHandler implements ValidateAnnotationHandler<NotEmpty> {
 
+    private static final String MSG = "不能为空!";
+
     @Override
     public Class<NotEmpty> getAnnotation() {
         return NotEmpty.class;
@@ -20,13 +22,8 @@ public class NotEmptyHandler implements ValidateAnnotationHandler<NotEmpty> {
     @Override
     public String validate(NotEmpty validateAnnotation, Object fieldValue) {
         if(ObjectUtil.isEmpty(fieldValue)) {
-            return getResultMsgWhenInvalid();
+            return MSG;
         }
         return null;
-    }
-
-    @Override
-    public String getResultMsgWhenInvalid() {
-        return "不能为空!!!!";
     }
 }

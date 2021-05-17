@@ -14,6 +14,8 @@ import java.util.Date;
  */
 public class MinHandler implements ValidateAnnotationHandler<Min> {
 
+    private static final String MSG = "的值必须大于{}!";
+
     @Override
     public Class<Min> getAnnotation() {
         return Min.class;
@@ -35,13 +37,9 @@ public class MinHandler implements ValidateAnnotationHandler<Min> {
             valid = true;
         }
         if (!valid) {
-            MessageFormatter.format(getResultMsgWhenInvalid(), value).getMessage();
+            MessageFormatter.format(MSG, value).getMessage();
         }
         return null;
     }
 
-    @Override
-    public String getResultMsgWhenInvalid() {
-        return "的值必须小于{}!";
-    }
 }
