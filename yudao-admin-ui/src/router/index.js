@@ -99,6 +99,19 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/mall',
+    component: Layout,
+    hidden: true,
+    children: [
+      {
+        path: 'product-attr-key/:attrId(\\d+)',
+        component: (resolve) => require(['@/views/mall/product/attr/attrValue'], resolve),
+        name: 'AttrValue',
+        meta: { title: '商品规格值', icon: '' }
+      }
+    ]
+  },
+  {
     path: '/job',
     component: Layout,
     hidden: true,

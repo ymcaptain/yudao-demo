@@ -32,3 +32,7 @@ DELETE FROM pay_app;
 DELETE FROM pay_channel;
 DELETE FROM pay_order;
 DELETE FROM pay_refund;
+
+-- mall 模块
+delete from mall_product_attr_key;
+delete from mall_product_attr_value;

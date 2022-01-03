@@ -1,10 +1,9 @@
 package cn.iocoder.yudao.adminserver.modules.pay.controller.app.vo;
 
-import lombok.*;
-import java.util.*;
-import io.swagger.annotations.*;
-
 import com.alibaba.excel.annotation.ExcelProperty;
+import lombok.Data;
+
+import java.util.Date;
 
 /**
  * 支付应用信息 Excel VO
