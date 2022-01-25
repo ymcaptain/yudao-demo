@@ -36,3 +36,6 @@ DELETE FROM pay_refund;
 -- mall 模块
 delete from mall_product_attr_key;
 delete from mall_product_attr_value;
+
+-- bpm 开头的 DB
+DELETE FROM "bpm_form";
