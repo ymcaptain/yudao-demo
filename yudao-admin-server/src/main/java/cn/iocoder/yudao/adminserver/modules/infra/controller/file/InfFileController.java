@@ -65,7 +65,8 @@ public class InfFileController {
     @ApiOperation("下载文件")
     @ApiImplicitParam(name = "path", value = "文件附件", required = true, dataTypeClass = MultipartFile.class)
     public void getFile(HttpServletResponse response, @PathVariable("path") String path) throws IOException {
-        TenantContextHolder.setNullTenantId();
+        // TODO @aquan 开发需要默认写死等待优化
+        TenantContextHolder.setTenantId(1L);
         InfFileDO file = fileCoreService.getFile(path);
         if (file == null) {
             log.warn("[getFile][path({}) 文件不存在]", path);
@@ -79,6 +80,7 @@ public class InfFileController {
     @ApiOperation("获得文件分页")
     @PreAuthorize("@ss.hasPermission('infra:file:query')")
     public CommonResult<PageResult<InfFileRespVO>> getFilePage(@Valid InfFilePageReqVO pageVO) {
+        TenantContextHolder.setNullTenantId();
         PageResult<InfFileDO> pageResult = fileService.getFilePage(pageVO);
         return success(InfFileConvert.INSTANCE.convertPage(pageResult));
     }

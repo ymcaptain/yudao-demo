@@ -17,4 +17,9 @@ public interface MallErrorCodeConstants {
     ErrorCode PRODUCT_ATTR_VALUE_NOT_EXISTS = new ErrorCode(1008000002, "商品规格值不存在");
 
     ErrorCode PRODUCT_ATTR_KEY_EXIST_VALUES_CANT_DELETE = new ErrorCode(1008000002, "商品规格键存在商品规格值无法删除");
+
+    /**
+     * ========== 商品品牌模块 1-009-000-000 ==========
+     */
+    ErrorCode PRODUCT_BRAND_NOT_EXISTS = new ErrorCode(1009000001, "商品品牌不存在");
 }
