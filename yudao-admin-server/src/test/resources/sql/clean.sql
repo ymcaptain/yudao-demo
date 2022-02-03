@@ -33,6 +33,7 @@ DELETE FROM pay_channel;
 DELETE FROM pay_order;
 DELETE FROM pay_refund;
 
+
 -- mall 模块
 DELETE FROM mall_product_attr_key;
 DELETE FROM mall_product_attr_value;
@@ -40,3 +41,4 @@ DELETE FROM mall_product_brand;
 
 -- bpm 开头的 DB
 DELETE FROM "bpm_form";
+DELETE FROM "bpm_user_group";

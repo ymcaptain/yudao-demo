@@ -1,5 +1,6 @@
 package cn.iocoder.yudao.userserver.modules.system.controller.auth.vo;
 
+import cn.iocoder.yudao.framework.common.validation.Mobile;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -8,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 
@@ -29,4 +31,8 @@ public class MbrAuthResetPasswordReqVO {
     @Pattern(regexp = "^[0-9]+$", message = "手机验证码必须都是数字")
     private String code;
 
+    @ApiModelProperty(value = "手机号",required = true,example = "15878962356")
+    @NotBlank(message = "手机号不能为空")
+    @Mobile
+    private String mobile;
 }
