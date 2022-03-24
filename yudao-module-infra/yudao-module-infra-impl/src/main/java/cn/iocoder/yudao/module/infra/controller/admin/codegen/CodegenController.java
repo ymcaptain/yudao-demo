@@ -4,6 +4,9 @@ import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.ZipUtil;
 import cn.iocoder.yudao.framework.common.pojo.CommonResult;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
+import cn.iocoder.yudao.framework.common.util.io.FileUtils;
+import cn.iocoder.yudao.framework.security.core.LoginUser;
+import cn.iocoder.yudao.framework.security.core.util.SecurityFrameworkUtils;
 import cn.iocoder.yudao.module.infra.controller.admin.codegen.vo.CodegenDetailRespVO;
 import cn.iocoder.yudao.module.infra.controller.admin.codegen.vo.CodegenPreviewRespVO;
 import cn.iocoder.yudao.module.infra.controller.admin.codegen.vo.CodegenUpdateReqVO;
@@ -14,6 +17,7 @@ import cn.iocoder.yudao.module.infra.convert.codegen.CodegenConvert;
 import cn.iocoder.yudao.module.infra.dal.dataobject.codegen.CodegenColumnDO;
 import cn.iocoder.yudao.module.infra.dal.dataobject.codegen.CodegenTableDO;
 import cn.iocoder.yudao.module.infra.dal.dataobject.codegen.SchemaTableDO;
+import cn.iocoder.yudao.module.infra.enums.ErrorCodeConstants;
 import cn.iocoder.yudao.module.infra.service.codegen.CodegenService;
 import cn.iocoder.yudao.framework.common.util.collection.CollectionUtils;
 import cn.iocoder.yudao.framework.common.util.servlet.ServletUtils;
@@ -30,11 +34,14 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static cn.iocoder.yudao.framework.common.pojo.CommonResult.error;
 import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
 import static cn.iocoder.yudao.framework.security.core.util.SecurityFrameworkUtils.getLoginUserId;
 
@@ -163,6 +170,24 @@ public class CodegenController {
         ZipUtil.zip(outputStream, paths, ins);
         // 输出
         ServletUtils.writeAttachment(response, "codegen.zip", outputStream.toByteArray());
+    }
+
+    @ApiOperation("本地项目生成源码")
+    @GetMapping("/genLocal")
+    @ApiImplicitParam(name = "tableId", value = "表编号", required = true, example = "1024", dataTypeClass = Long.class)
+    @PreAuthorize("@ss.hasAnyRoles('super_admin')")
+    public CommonResult<Boolean> downloadCodegenLocal(@RequestParam("tableId") Long tableId){
+        // 生成代码
+        Map<String, String> codes = codegenService.generationCodes(tableId);
+        // 构建 zip 包
+        String[] paths = codes.keySet().toArray(new String[0]);
+        ByteArrayInputStream[] ins = codes.values().stream().map(IoUtil::toUtf8Stream).toArray(ByteArrayInputStream[]::new);
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        ZipUtil.zip(outputStream, paths, ins);
+        ByteArrayInputStream bin = new ByteArrayInputStream(outputStream.toByteArray());
+        File file = new File(System.getProperty("user.dir"));
+        ZipUtil.unzip(bin,file, StandardCharsets.UTF_8);
+        return success(true);
     }
 
 }

@@ -63,6 +63,14 @@ export function downloadCodegen(tableId) {
   })
 }
 
+// 下载生成代码
+export function downloadCodegenTableLocal(tableId) {
+  return request({
+    url: '/infra/codegen/genLocal?tableId=' + tableId,
+    method: 'get',
+  })
+}
+
 // 获得表定义分页
 export function getSchemaTableList(query) {
   return request({

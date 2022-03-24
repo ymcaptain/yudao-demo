@@ -78,15 +78,15 @@ public class CodegenEngine {
             .put(javaTemplatePath("test/serviceTest"),
                     javaModuleImplTestFilePath("service/${table.businessName}/${table.className}ServiceImplTest"))
             // Java module-api Main
-            .put(javaTemplatePath("enums/errorcode"), javaModuleApiMainFilePath("enums/ErrorCodeConstants_手动操作"))
+            .put(javaTemplatePath("enums/errorcode"), javaModuleApiMainFilePath("enums/ErrorCodeConstants_${classNameVar}_手动操作"))
             // Vue
             .put(vueTemplatePath("views/index.vue"),
                     vueFilePath("views/${table.moduleName}/${classNameVar}/index.vue"))
             .put(vueTemplatePath("api/api.js"),
                     vueFilePath("api/${table.moduleName}/${classNameVar}.js"))
             // SQL
-            .put("codegen/sql/sql.vm", "sql/sql.sql")
-            .put("codegen/sql/h2.vm", "sql/h2.sql")
+            .put("codegen/sql/sql.vm", menuSqlFilePath())
+            .put("codegen/sql/h2.vm", h2SqlFilePath())
             .build();
 
     @Resource
@@ -217,7 +217,19 @@ public class CodegenEngine {
     private static String mapperXmlFilePath() {
         return "yudao-module-${table.moduleName}/" + // 顶级模块
                 "yudao-module-${table.moduleName}-impl/" + // 子模块
-                "src/resources/mapper/${table.businessName}/${table.className}Mapper.xml";
+                "src/main/resources/mapper/${table.businessName}/${table.className}Mapper.xml";
+    }
+
+    private static String menuSqlFilePath() {
+        return "yudao-module-${table.moduleName}/" + // 顶级模块
+                "yudao-module-${table.moduleName}-impl/" + // 子模块
+                "src/main/resources/menu/${table.className}.sql";
+    }
+
+    private static String h2SqlFilePath() {
+        return "yudao-module-${table.moduleName}/" + // 顶级模块
+                "yudao-module-${table.moduleName}-impl/" + // 子模块
+                "src/test/resources/sql/h2/${table.className}.sql";
     }
 
     private static String vueTemplatePath(String path) {

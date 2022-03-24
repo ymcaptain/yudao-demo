@@ -53,7 +53,8 @@
           <el-button type="text" size="small" icon="el-icon-edit" @click="handleEditTable(scope.row)" v-hasPermi="['infra:codegen:update']">编辑</el-button>
           <el-button type="text" size="small" icon="el-icon-delete" @click="handleDelete(scope.row)" v-hasPermi="['infra:codegen:delete']">删除</el-button>
           <el-button type="text" size="small" icon="el-icon-refresh" @click="handleSynchDb(scope.row)" v-hasPermi="['infra:codegen:update']">同步</el-button>
-          <el-button type="text" size="small" icon="el-icon-download" @click="handleGenTable(scope.row)" v-hasPermi="['infra:codegen:download']">生成代码</el-button>
+          <el-button type="text" size="small" icon="el-icon-place" @click="handleGenTableLocal(scope.row)" v-hasPermi="['infra:codegen:download']">一键编程</el-button>
+          <el-button type="text" size="small" icon="el-icon-download" @click="handleGenTable(scope.row)" v-hasPermi="['infra:codegen:download']">下载代码</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -101,8 +102,10 @@
 </template>
 
 <script>
-import { getCodegenTablePage, previewCodegen, downloadCodegen, deleteCodegen,
-  syncCodegenFromDB, syncCodegenFromSQL, createCodegenListFromSQL } from "@/api/infra/codegen";
+import {
+  getCodegenTablePage, previewCodegen, downloadCodegen, deleteCodegen,
+  syncCodegenFromDB, syncCodegenFromSQL, createCodegenListFromSQL, downloadCodegenTableLocal,
+} from '@/api/infra/codegen';
 
 import importTable from "./importTable";
 // 代码高亮插件
@@ -191,11 +194,23 @@ export default {
       this.queryParams.pageNo = 1;
       this.getList();
     },
-    /** 生成代码操作 */
+    /**下载代码操作 */
     handleGenTable(row) {
       downloadCodegen(row.id).then(response => {
         this.$download.zip(response, 'codegen-' + row.tableName + '.zip');
       })
+    },
+    /** 生成代码操作 */
+    handleGenTableLocal(row) {
+      this.$modal.confirm('是否要生成表为:"' + row.tableName + '"的代码? 他会覆盖掉您之前的代码').then(() => {
+        downloadCodegenTableLocal(row.id).then(response => {
+          this.$modal.msgSuccess("生成成功");
+        })
+      }).catch(() => {
+        this.$modal.msg("已取消生成");
+
+      });
+
     },
     /** 同步数据库操作 */
     handleSynchDb(row) {
