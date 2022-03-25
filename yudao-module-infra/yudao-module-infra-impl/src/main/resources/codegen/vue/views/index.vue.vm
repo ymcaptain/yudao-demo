@@ -25,7 +25,7 @@
                        :key="dict.value" :label="dict.label" :value="dict.value"/>
         ##组合
     #elseif("" != $selectTableName && "" != $selectTableValue && "" != $selectTableLabel)
-          <el-option v-for="item in this.$selectListQuery"
+          <el-option v-for="item in selectLists.$selectListQuery"
                  :key="item.id" :label="item.name" :value="item.id"></el-option>
     #else##没数据
           <el-option label="请选择字典生成" value="" />
@@ -148,7 +148,7 @@
                        :key="dict.value" :label="dict.label" #if ($column.javaType == "Integer" || $column.javaType == "Long"):value="parseInt(dict.value)"#else:value="dict.value"#end />
     ##组合
     #elseif("" != $selectTableName && "" != $selectTableValue && "" != $selectTableLabel)
-            <el-option v-for="item in this.$selectListForm"
+            <el-option v-for="item in selectLists.$selectListForm"
                    :key="item.id" :label="item.name" :value="item.id"></el-option>
     #else##没数据
             <el-option label="请选择配置信息" value="" />
@@ -163,7 +163,7 @@
                          :key="dict.value" #if($column.javaType == "Integer" || $column.javaType == "Long"):label="parseInt(dict.value)"#else:label="dict.value"#end>{{dict.label}}</el-checkbox>
     ##组合
     #elseif("" != $selectTableName && "" != $selectTableValue && "" != $selectTableLabel)
-            <el-checkbox v-for="item in this.$selectListForm"
+            <el-checkbox v-for="item in selectLists.$selectListForm"
                    :key="item.id" :label="item.id" > {{item.name}} </el-checkbox>
     #else##没数据
             <el-checkbox>请选择配置信息</el-checkbox>
@@ -178,7 +178,7 @@
                       :key="dict.value" #if($column.javaType == "Integer" || $column.javaType == "Long"):label="parseInt(dict.value)"#else:label="dict.value"#end>{{dict.label}}</el-radio>
     ##组合
     #elseif("" != $selectTableName && "" != $selectTableValue && "" != $selectTableLabel)
-            <el-radio v-for="item in this.$selectListForm"
+            <el-radio v-for="item in selectLists.$selectListForm"
                    :key="item.id" :label="item.id" > {{item.name}} </el-radio>
     #else##没数据
             <el-radio label="1">请选择配置信息</el-radio>
@@ -301,7 +301,7 @@ export default {
         #if("" != $column.selectTableName && "" != $column.selectTableValue && "" != $column.selectTableLabel)
         // 执行查询 $column.selectTableName
         get${simpleClassName}SelectList("$column.selectTableName","$column.selectTableValue","$column.selectTableLabel").then(response => {
-          this.$selectListQuery = response.data.list;
+          this.selectLists.$selectListQuery = response.data;
         });
         #end
         #end
@@ -312,7 +312,7 @@ export default {
         #if("" != $column.selectTableName && "" != $column.selectTableValue && "" != $column.selectTableLabel)
         // 执行查询 $column.selectTableName
         get${simpleClassName}SelectList("$column.selectTableName","$column.selectTableValue","$column.selectTableLabel").then(response => {
-          this.$selectListForm = response.data.list;
+          this.selectLists.$selectListForm = response.data;
         });
         #end
         #end

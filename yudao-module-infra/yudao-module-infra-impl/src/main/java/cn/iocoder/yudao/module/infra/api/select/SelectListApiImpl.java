@@ -6,6 +6,7 @@ import cn.iocoder.yudao.module.infra.dal.mysql.select.SelectListMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -18,6 +19,7 @@ import java.util.List;
 @Validated
 public class SelectListApiImpl implements SelectListApi{
 
+    @Resource
     SelectListMapper selectListMapper;
 
     /**

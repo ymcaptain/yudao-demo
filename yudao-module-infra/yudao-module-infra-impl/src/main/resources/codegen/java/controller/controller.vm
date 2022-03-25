@@ -39,6 +39,9 @@ import ${basePackage}.module.${table.moduleName}.service.${table.businessName}.$
 public class ${sceneEnum.prefixClass}${table.className}Controller {
 
     @Resource
+    private SelectListApi selectListApi;
+
+    @Resource
     private ${table.className}Service ${classNameVar}Service;
 
     @PostMapping("/create")
@@ -115,8 +118,17 @@ public class ${sceneEnum.prefixClass}${table.className}Controller {
     @ApiOperation("获得${table.classComment}定义列表")
     #if ($sceneEnum.scene == 1)    @PreAuthorize("@ss.hasPermission('${permissionPrefix}:query')")#end
 
-    public CommonResult<SelectCommonVo> get${simpleClassName}SelectList(@Valid SelectListQueryVo queryVO) {
-        return success(SelectListApi.selectList(queryVO));
+    public CommonResult<List<SelectCommonVo>> get${simpleClassName}SelectList(SelectListQueryVo queryVO) {
+        String name = queryVO.getTableName();
+#foreach ($column in $columns)
+    #if("" != $column.selectTableName)
+
+        if("$column.selectTableName".equals(name)){
+            return success(selectListApi.selectList(queryVO));
+        }
+    #end
+#end
+        return success(new List<SelectCommonVo>);
     }
 
 }

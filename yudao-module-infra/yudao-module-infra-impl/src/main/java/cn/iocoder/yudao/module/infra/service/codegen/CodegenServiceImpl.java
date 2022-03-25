@@ -258,6 +258,19 @@ public class CodegenServiceImpl implements CodegenService {
                 column.setSelectTableLabel("");
             }
 
+            //组合查询
+            String selectTableName = column.getSelectTableName();
+            if (selectTableName == null) {
+                column.setSelectTableName("");
+            }
+
+
+            //组合查询
+            String selectTableValue = column.getSelectTableValue();
+            if (selectTableValue == null) {
+                column.setSelectTableValue("");
+            }
+
 
         }
 
