@@ -128,7 +128,7 @@ public class ${sceneEnum.prefixClass}${table.className}Controller {
         }
     #end
 #end
-        return success(new List<SelectCommonVo>);
+        return success(new ArrayList<SelectCommonVo>());
     }
 
 }

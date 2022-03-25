@@ -438,6 +438,7 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
+      let excel_name = '${table.classComment}.xls';
       // 处理查询参数
       let params = {...this.queryParams};
       params.pageNo = undefined;
@@ -451,13 +452,12 @@ export default {
       #end
       #end
 
-      #set ($downloadName = ${table.classComment} + ".xls")
       // 执行导出
       this.#[[$modal]]#.confirm('是否确认导出所有${table.classComment}数据项?').then(() => {
           this.exportLoading = true;
           return export${simpleClassName}Excel(params);
         }).then(response => {
-          this.$download.excel(response, $downloadName);
+          this.$download.excel(response,excel_name);
           this.exportLoading = false;
         }).catch(() => {});
     }
