@@ -1,6 +1,5 @@
 package cn.iocoder.yudao.module.infra.api.select.vo;
 
-import com.sun.istack.internal.NotNull;
 import lombok.Data;
 
 /**
