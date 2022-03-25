@@ -82,4 +82,13 @@ public class CodegenColumnBaseVO {
     @NotNull(message = "显示类型不能为空")
     private String htmlType;
 
+    @ApiModelProperty(value = "组合表名",  example = "system_user")
+    private String selectTableName;
+
+    @ApiModelProperty(value = "组合表值",  example = "id")
+    private String selectTableValue;
+
+    @ApiModelProperty(value = "组合标签",  example = "name")
+    private String selectTableLabel;
+
 }

@@ -22,6 +22,10 @@ import ${ExcelUtilsClassName};
 import ${OperateLogClassName};
 import static ${OperateTypeEnumClassName}.*;
 
+import ${basePackage}.module.infra.api.select.SelectListApi;
+import ${basePackage}.module.infra.api.select.vo.SelectCommonVo;
+import ${basePackage}.module.infra.api.select.vo.SelectListQueryVo;
+
 import ${basePackage}.module.${table.moduleName}.controller.${sceneEnum.basePackage}.${table.businessName}.vo.*;
 import ${basePackage}.module.${table.moduleName}.dal.dataobject.${table.businessName}.${table.className}DO;
 import ${basePackage}.module.${table.moduleName}.convert.${table.businessName}.${table.className}Convert;
@@ -104,6 +108,15 @@ public class ${sceneEnum.prefixClass}${table.className}Controller {
         // 导出 Excel
         List<${sceneEnum.prefixClass}${table.className}ExcelVO> datas = ${table.className}Convert.INSTANCE.convertList02(list);
         ExcelUtils.write(response, "${table.classComment}.xls", "数据", ${sceneEnum.prefixClass}${table.className}ExcelVO.class, datas);
+    }
+
+
+    @GetMapping("/selectList")
+    @ApiOperation("获得${table.classComment}定义列表")
+    #if ($sceneEnum.scene == 1)    @PreAuthorize("@ss.hasPermission('${permissionPrefix}:query')")#end
+
+    public CommonResult<SelectCommonVo> get${simpleClassName}SelectList(@Valid SelectListQueryVo queryVO) {
+        return success(SelectListApi.selectList(queryVO));
     }
 
 }

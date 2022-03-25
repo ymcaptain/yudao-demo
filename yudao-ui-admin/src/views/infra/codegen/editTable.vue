@@ -61,7 +61,7 @@
               <el-checkbox true-label="true" false-label="false" v-model="scope.row.listOperation"></el-checkbox>
             </template>
           </el-table-column>
-          <el-table-column label="查询方式" min-width="10%">
+          <el-table-column label="查询方式" min-width="8%">
             <template slot-scope="scope">
               <el-select v-model="scope.row.listOperationCondition">
                 <el-option label="=" value="=" />
@@ -75,7 +75,7 @@
               </el-select>
             </template>
           </el-table-column>
-          <el-table-column label="允许空" min-width="5%">
+          <el-table-column label="可空" min-width="4%">
             <template slot-scope="scope">
               <el-checkbox true-label="true" false-label="false" v-model="scope.row.nullable"></el-checkbox>
             </template>
@@ -97,7 +97,8 @@
           </el-table-column>
           <el-table-column label="字典类型" min-width="12%">
             <template slot-scope="scope">
-              <el-select v-model="scope.row.dictType" clearable filterable placeholder="请选择">
+              <el-select v-model="scope.row.dictType" clearable filterable placeholder="不使用" :disabled="canUseSelect(scope.row.htmlType)">
+                <el-option label="不使用"  />
                 <el-option
                     v-for="dict in dictOptions"
                     :key="dict.id"
@@ -107,11 +108,33 @@
               </el-select>
             </template>
           </el-table-column>
-          <el-table-column label="示例" min-width="10%">
+
+
+<!--          添加组合查询的表名-->
+          <el-table-column label="组合表名" min-width="8%">
+            <template slot-scope="scope">
+              <el-input v-model="scope.row.selectTableName" placeholder="表名"  :disabled="canUseSelect(scope.row.htmlType)"></el-input>
+            </template>
+          </el-table-column>
+<!--          添加组合查询的id名称-->
+          <el-table-column label="组合值" min-width="8%">
+            <template slot-scope="scope">
+              <el-input v-model="scope.row.selectTableValue" placeholder="值字段"  :disabled="canUseSelect(scope.row.htmlType)"></el-input>
+            </template>
+          </el-table-column>
+<!--          添加组合查询的name名称-->
+          <el-table-column label="组合标签" min-width="8%">
+            <template slot-scope="scope">
+              <el-input v-model="scope.row.selectTableLabel" placeholder="标签字段" :disabled="canUseSelect(scope.row.htmlType)"></el-input>
+            </template>
+          </el-table-column>
+
+          <el-table-column label="示例" min-width="8%">
             <template slot-scope="scope">
               <el-input v-model="scope.row.example"></el-input>
             </template>
           </el-table-column>
+
         </el-table>
       </el-tab-pane>
       <el-tab-pane label="生成信息" name="genInfo">
@@ -213,9 +236,21 @@ export default {
     /** 关闭按钮 */
     close() {
       this.$tab.closeOpenPage({
-        path: "/infra/codegen",
+        path: "/coder/codegen",
         query: { t: Date.now(), pageNum: this.$route.query.pageNum } }
       );
+    },
+    /** 检验是否可用 */
+    canUseSelect(type){
+      if("select" === type){
+        return false;
+      } else if("radio" === type){
+        return false;
+      } else if("checkbox" === type){
+        return false;
+      }else {
+        return true;
+      }
     }
   },
   mounted() {

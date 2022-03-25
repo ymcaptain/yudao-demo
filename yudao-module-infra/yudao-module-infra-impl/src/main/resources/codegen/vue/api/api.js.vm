@@ -44,6 +44,21 @@ export function get${simpleClassName}Page(query) {
   })
 }
 
+// 获得${table.classComment}定义列表
+export function get${simpleClassName}SelectList(tableName,tableValue,tableLabel,whereBegin,whereEnd) {
+  return request({
+    url: '${baseURL}/selectList',
+    method: 'get',
+    params: {
+      tableName: tableName,
+      id: tableValue,
+      name: tableLabel,
+      whereBegin: whereBegin,
+      whereEnd: whereEnd
+    }
+  })
+}
+
 // 导出${table.classComment} Excel
 export function export${simpleClassName}Excel(query) {
   return request({

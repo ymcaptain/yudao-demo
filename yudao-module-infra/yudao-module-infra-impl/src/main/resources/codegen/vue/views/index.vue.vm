@@ -6,6 +6,10 @@
 #foreach($column in $columns)
 #if ($column.listOperation)
     #set ($dictType=$column.dictType)
+    #set ($selectTableName=$column.selectTableName)
+    #set ($selectTableValue=$column.selectTableValue)
+    #set ($selectTableLabel=$column.selectTableLabel)
+    #set ($selectListQuery = $column.selectTableName + "QueryList")
     #set ($javaField = $column.javaField)
     #set ($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
     #set ($comment=$column.columnComment)
@@ -19,7 +23,11 @@
     #if ("" != $dictType)## 设置了 dictType 数据字典的情况
           <el-option v-for="dict in this.getDictDatas(DICT_TYPE.$dictType.toUpperCase())"
                        :key="dict.value" :label="dict.label" :value="dict.value"/>
-    #else## 未设置 dictType 数据字典的情况
+        ##组合
+    #elseif("" != $selectTableName && "" != $selectTableValue && "" != $selectTableLabel)
+          <el-option v-for="item in this.$selectListQuery"
+                 :key="item.id" :label="item.name" :value="item.id"></el-option>
+    #else##没数据
           <el-option label="请选择字典生成" value="" />
     #end
         </el-select>
@@ -62,6 +70,9 @@
 #foreach($column in $columns)
 #if ($column.listOperationResult)
     #set ($dictType=$column.dictType)
+    #set ($selectTableName=$column.selectTableName)
+    #set ($selectTableValue=$column.selectTableValue)
+    #set ($selectTableLabel=$column.selectTableLabel)
     #set ($javaField = $column.javaField)
     #set ($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
     #set ($comment=$column.columnComment)
@@ -101,6 +112,10 @@
 #foreach($column in $columns)
 #if ($column.createOperation || $column.updateOperation)
     #set ($dictType = $column.dictType)
+    #set ($selectTableName=$column.selectTableName)
+    #set ($selectTableValue=$column.selectTableValue)
+    #set ($selectTableLabel=$column.selectTableLabel)
+    #set ($selectListForm = $column.selectTableName + "FormList")
     #set ($javaField = $column.javaField)
     #set ($AttrName = $column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
     #set ($comment = $column.columnComment)
@@ -131,8 +146,12 @@
     #if ("" != $dictType)## 有数据字典
             <el-option v-for="dict in this.getDictDatas(DICT_TYPE.$dictType.toUpperCase())"
                        :key="dict.value" :label="dict.label" #if ($column.javaType == "Integer" || $column.javaType == "Long"):value="parseInt(dict.value)"#else:value="dict.value"#end />
-    #else##没数据字典
-            <el-option label="请选择字典生成" value="" />
+    ##组合
+    #elseif("" != $selectTableName && "" != $selectTableValue && "" != $selectTableLabel)
+            <el-option v-for="item in this.$selectListForm"
+                   :key="item.id" :label="item.name" :value="item.id"></el-option>
+    #else##没数据
+            <el-option label="请选择配置信息" value="" />
     #end
           </el-select>
         </el-form-item>
@@ -142,8 +161,12 @@
     #if ("" != $dictType)## 有数据字典
             <el-checkbox v-for="dict in this.getDictDatas(DICT_TYPE.$dictType.toUpperCase())"
                          :key="dict.value" #if($column.javaType == "Integer" || $column.javaType == "Long"):label="parseInt(dict.value)"#else:label="dict.value"#end>{{dict.label}}</el-checkbox>
-    #else##没数据字典
-            <el-checkbox>请选择字典生成</el-checkbox>
+    ##组合
+    #elseif("" != $selectTableName && "" != $selectTableValue && "" != $selectTableLabel)
+            <el-checkbox v-for="item in this.$selectListForm"
+                   :key="item.id" :label="item.id" > {{item.name}} </el-checkbox>
+    #else##没数据
+            <el-checkbox>请选择配置信息</el-checkbox>
     #end
           </el-checkbox-group>
         </el-form-item>
@@ -153,8 +176,12 @@
     #if ("" != $dictType)## 有数据字典
             <el-radio v-for="dict in this.getDictDatas(DICT_TYPE.$dictType.toUpperCase())"
                       :key="dict.value" #if($column.javaType == "Integer" || $column.javaType == "Long"):label="parseInt(dict.value)"#else:label="dict.value"#end>{{dict.label}}</el-radio>
-    #else##没数据字典
-            <el-radio label="1">请选择字典生成</el-radio>
+    ##组合
+    #elseif("" != $selectTableName && "" != $selectTableValue && "" != $selectTableLabel)
+            <el-radio v-for="item in this.$selectListForm"
+                   :key="item.id" :label="item.id" > {{item.name}} </el-radio>
+    #else##没数据
+            <el-radio label="1">请选择配置信息</el-radio>
     #end
           </el-radio-group>
         </el-form-item>
@@ -179,7 +206,7 @@
 </template>
 
 <script>
-import { create${simpleClassName}, update${simpleClassName}, delete${simpleClassName}, get${simpleClassName}, get${simpleClassName}Page, export${simpleClassName}Excel } from "@/api/${table.moduleName}/${classNameVar}";
+import { create${simpleClassName}, update${simpleClassName}, delete${simpleClassName}, get${simpleClassName}, get${simpleClassName}Page, get${simpleClassName}SelectList, export${simpleClassName}Excel } from "@/api/${table.moduleName}/${classNameVar}";
 #if ($hasImageUploadColumn)
 import ImageUpload from '@/components/ImageUpload';
 #end
@@ -247,13 +274,49 @@ export default {
         $column.javaField: [{ required: true, message: "${comment}不能为空", trigger: #if($column.htmlType == "select")"change"#else"blur"#end }],
       #end
       #end
+      },
+      selectLists:{
+        #foreach ($column in $columns)
+            #set ($selectListQuery = $column.selectTableName + "QueryList")
+            #set ($selectListForm = $column.selectTableName + "FormList")
+            #if("" != $column.selectTableName && "" != $column.selectTableValue && "" != $column.selectTableLabel)
+            // $column.selectTableName 搜索区列表
+            $selectListQuery : null,
+            // $column.selectTableName 表单列表
+            $selectListForm : null,
+          #end
+        #end
       }
     };
   },
   created() {
+    this.getSelectQueryList();
     this.getList();
   },
   methods: {
+    /** 获取组合查询 */
+    getSelectQueryList(){
+        #foreach ($column in $columns)
+        #set ($selectListQuery = $column.selectTableName + "QueryList")
+        #if("" != $column.selectTableName && "" != $column.selectTableValue && "" != $column.selectTableLabel)
+        // 执行查询 $column.selectTableName
+        get${simpleClassName}SelectList("$column.selectTableName","$column.selectTableValue","$column.selectTableLabel").then(response => {
+          this.$selectListQuery = response.data.list;
+        });
+        #end
+        #end
+    },    /** 获取组合查询 */
+    getSelectFormList(){
+        #foreach ($column in $columns)
+        #set ($selectListForm = $column.selectTableName + "FormList")
+        #if("" != $column.selectTableName && "" != $column.selectTableValue && "" != $column.selectTableLabel)
+        // 执行查询 $column.selectTableName
+        get${simpleClassName}SelectList("$column.selectTableName","$column.selectTableValue","$column.selectTableLabel").then(response => {
+          this.$selectListForm = response.data.list;
+        });
+        #end
+        #end
+    },
     /** 查询列表 */
     getList() {
       this.loading = true;
@@ -316,6 +379,7 @@ export default {
     handleAdd() {
       this.reset();
       this.open = true;
+      this.getSelectFormList();
       this.title = "添加${table.classComment}";
     },
     /** 修改按钮操作 */
@@ -330,6 +394,7 @@ export default {
         #end
         #end
         this.open = true;
+        this.getSelectFormList();
         this.title = "修改${table.classComment}";
       });
     },
@@ -385,12 +450,14 @@ export default {
       #end
       #end
       #end
+
+      #set ($downloadName = ${table.classComment} + ".xls")
       // 执行导出
       this.#[[$modal]]#.confirm('是否确认导出所有${table.classComment}数据项?').then(() => {
           this.exportLoading = true;
           return export${simpleClassName}Excel(params);
         }).then(response => {
-          this.$download.excel(response, '${table.classComment}.xls');
+          this.$download.excel(response, $downloadName);
           this.exportLoading = false;
         }).catch(() => {});
     }

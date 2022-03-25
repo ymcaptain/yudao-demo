@@ -249,6 +249,17 @@ public class CodegenServiceImpl implements CodegenService {
         if (CollUtil.isEmpty(columns)) {
             throw exception(CODEGEN_COLUMN_NOT_EXISTS);
         }
+        for (CodegenColumnDO column : columns) {
+            // 防止出现空
+
+            //组合查询
+            String selectTableLabel = column.getSelectTableLabel();
+            if (selectTableLabel == null) {
+                column.setSelectTableLabel("");
+            }
+
+
+        }
 
         // 执行生成
         return codegenEngine.execute(table, columns);

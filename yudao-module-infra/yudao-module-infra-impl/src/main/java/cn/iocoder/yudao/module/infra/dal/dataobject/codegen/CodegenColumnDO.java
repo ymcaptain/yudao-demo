@@ -83,6 +83,18 @@ public class CodegenColumnDO extends BaseDO {
      */
     private String dictType;
     /**
+     * 组合表名
+     */
+    private String selectTableName;
+    /**
+     * 组合表值
+     */
+    private String selectTableValue;
+    /**
+     * 组合标签
+     */
+    private String selectTableLabel;
+    /**
      * 数据示例，主要用于生成 Swagger 注解的 example 字段
      */
     private String example;
