@@ -6,21 +6,6 @@
       <el-form-item label="标题" prop="title">
         <el-input v-model="queryParams.title" placeholder="请输入标题" clearable @keyup.enter.native="handleQuery"/>
       </el-form-item>
-      <el-form-item label="屏幕比例X" prop="scaleX">
-        <el-input v-model="queryParams.scaleX" placeholder="请输入屏幕比例X" clearable @keyup.enter.native="handleQuery"/>
-      </el-form-item>
-      <el-form-item label="屏幕比例Y" prop="scaleY">
-        <el-input v-model="queryParams.scaleY" placeholder="请输入屏幕比例Y" clearable @keyup.enter.native="handleQuery"/>
-      </el-form-item>
-      <el-form-item label="设计预览图" prop="designImgId">
-        <el-input v-model="queryParams.designImgId" placeholder="请输入设计预览图" clearable @keyup.enter.native="handleQuery"/>
-      </el-form-item>
-      <el-form-item label="禁用状态" prop="state">
-        <el-select v-model="queryParams.state" placeholder="请选择禁用状态" clearable size="small">
-          <el-option v-for="dict in this.getDictDatas(DICT_TYPE.COMMON_STATUS)"
-                       :key="dict.value" :label="dict.label" :value="dict.value"/>
-                </el-select>
-      </el-form-item>
       <el-form-item label="访问码" prop="viewCode">
         <el-input v-model="queryParams.viewCode" placeholder="请输入访问码" clearable @keyup.enter.native="handleQuery"/>
       </el-form-item>
@@ -56,12 +41,6 @@
       <el-table-column label="标题" align="center" prop="title" />
       <el-table-column label="屏幕比例X" align="center" prop="scaleX" />
       <el-table-column label="屏幕比例Y" align="center" prop="scaleY" />
-      <el-table-column label="设计预览图" align="center" prop="designImgId" />
-      <el-table-column label="禁用状态" align="center" prop="state">
-        <template slot-scope="scope">
-          <dict-tag :type="DICT_TYPE.COMMON_STATUS" :value="scope.row.state" />
-        </template>
-      </el-table-column>
       <el-table-column label="访问码" align="center" prop="viewCode" />
       <el-table-column label="访问量" align="center" prop="countView" />
       <el-table-column label="创建时间" align="center" prop="createTime" width="180">
@@ -71,9 +50,9 @@
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button size="mini" type="text" icon="el-icon-edit" @click="handleView(scope.row)"
+          <el-button size="mini" type="text" icon="el-icon-monitor" @click="handleView(scope.row)"
                      v-hasPermi="['design:screen:query']">预览</el-button>
-          <el-button size="mini" type="text" icon="el-icon-edit" @click="handleEdit(scope.row)"
+          <el-button size="mini" type="text" icon="el-icon-coordinate" @click="handleEdit(scope.row)"
                      v-hasPermi="['design:screen:update']">设计</el-button>
           <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)"
                      v-hasPermi="['design:screen:update']">修改</el-button>
@@ -94,30 +73,6 @@
         </el-form-item>
         <el-form-item label="描述" prop="simpleDesc">
           <el-input v-model="form.simpleDesc" type="textarea" placeholder="请输入内容" />
-        </el-form-item>
-        <el-form-item label="背景图片">
-          <imageUpload v-model="form.bgImg"/>
-        </el-form-item>
-        <el-form-item label="背景颜色" prop="bgColor">
-          <el-input v-model="form.bgColor" placeholder="请输入背景颜色" />
-        </el-form-item>
-        <el-form-item label="屏幕比例X" prop="scaleX">
-          <el-input v-model="form.scaleX" placeholder="请输入屏幕比例X" />
-        </el-form-item>
-        <el-form-item label="屏幕比例Y" prop="scaleY">
-          <el-input v-model="form.scaleY" placeholder="请输入屏幕比例Y" />
-        </el-form-item>
-        <el-form-item label="页面组件" prop="components">
-          <el-input v-model="form.components" type="textarea" placeholder="请输入内容" />
-        </el-form-item>
-        <el-form-item label="设计预览图" prop="designImgId">
-          <el-input v-model="form.designImgId" placeholder="请输入设计预览图" />
-        </el-form-item>
-        <el-form-item label="禁用状态" prop="state">
-          <el-select v-model="form.state" placeholder="请选择禁用状态">
-            <el-option v-for="dict in this.getDictDatas(DICT_TYPE.COMMON_STATUS)"
-                       :key="dict.value" :label="dict.label" :value="parseInt(dict.value)" />
-              </el-select>
         </el-form-item>
         <el-form-item label="访问码" prop="viewCode">
           <el-input v-model="form.viewCode" placeholder="请输入访问码" />
@@ -264,7 +219,7 @@ export default {
     },
     /** 设计按钮操作 */
     handleView(row) {
-      window.open('/#/preview?id='+row.id,"_blank");
+      window.open('/#/view?id='+row.id,"_blank");
     },
     /** 提交按钮 */
     submitForm() {

@@ -130,9 +130,7 @@ public class ScreenController {
         ScreenDO design = screenService.getScreen(id);
         if (mode == null || mode == 1){//浏览状态
             if (StringUtils.isNotBlank(design.getViewCode()) && !viewCode.equals(design.getViewCode())){
-                System.out.println("design-success = " + design);
-                return success(ScreenConvert.INSTANCE.convertUpdate(design));
-
+                return success("NEED_AUTH");
             }
         }
         return success(ScreenConvert.INSTANCE.convertUpdate(design));

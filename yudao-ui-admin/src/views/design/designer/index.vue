@@ -6,7 +6,7 @@
                   fit="fill"/>
       </el-col>
       <el-col :span="6">
-        <span class="el-icon-magic-stick lg" style="width: 30px"/>
+        <span class="lg" style="width: 30px"/>
         <span>{{title_label}}</span>
       </el-col>
       <el-col :span="16" @click.self.native="outBlur">
@@ -212,6 +212,7 @@ export default {
           that.$modal.msgError('导入失败，与当前版本不一致');
         }else{
           that.designData = fileJson;
+          that.designData.id = that.$route.query.id;
           that.cacheComponents = fileJson.components;
           that.designData.components = [];
           that.$modal.msgSuccess('导入成功');
@@ -323,7 +324,7 @@ export default {
       this.designData.components = this.cacheComponents;
       localStorage.setItem('designCache', JSON.stringify(this.designData));
       let routeUrl = this.$router.resolve({
-        path: "/preview"
+        path: "/view" + "?id=" + this.designData.id
       });
       window.open(routeUrl.href, '_blank');
     },

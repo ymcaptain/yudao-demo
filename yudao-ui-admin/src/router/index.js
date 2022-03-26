@@ -61,7 +61,7 @@ export const constantRoutes = [
     component: (resolve) => require(['@/views/design/designer/index'], resolve),
     hidden: true
   },{
-    path: '/preview',
+    path: '/view',
     component: (resolve) => require(['@/views/design/preview/index'], resolve),
     hidden: true
   },

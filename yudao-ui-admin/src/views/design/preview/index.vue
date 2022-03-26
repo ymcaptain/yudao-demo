@@ -35,6 +35,7 @@
 </template>
 
 <script>
+import "@/components/DataV/registerCpt";
 import {authViewCodeApi, getByIdApi} from "@/api/design/DesignerApi";
 import {fileUrl} from "/env";
 
@@ -78,7 +79,7 @@ export default {
         }
         const viewCode = localStorage.getItem('code'+id);//如果已经输入过访问码就带着访问码一起请求
         getByIdApi(id,1, viewCode).then(res => {
-          if (res.data === 'NEED_AUTH'){
+          if (res.msg === 'NEED_AUTH'){
             that.authCodeDialogVisible = true;
           }else{
             that.loadDesign(res.data, true);
