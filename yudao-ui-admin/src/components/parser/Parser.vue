@@ -174,7 +174,7 @@ export default {
       this.$refs[this.formConf.formRef].validate(valid => {
         if (!valid) return false
         // 触发 submit 事件
-        // update by 芋道源码
+        // update by 钰祺源码
         // this.$emit('submit', this[this.formConf.formModel])
         this.$emit('submit', {
           conf: this.formConfCopy,

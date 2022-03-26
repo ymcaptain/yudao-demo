@@ -162,7 +162,7 @@ export default {
       if (this.fileSize) {
         const isLt = file.size / 1024 / 1024 < this.fileSize;
         if (!isLt) {
-          this.$message.error(`上传文件大小不能超过 ${this.fileSize} MB!`);
+          this.$modal.msgError(`上传文件大小不能超过 ${this.fileSize} MB!`);
           return false;
         }
       }
@@ -180,11 +180,11 @@ export default {
         // 调整光标到最后
         quill.setSelection(length + 1);
       } else {
-        this.$message.error("图片插入失败");
+        this.$modal.msgError("图片插入失败");
       }
     },
     handleUploadError() {
-      this.$message.error("图片插入失败");
+      this.$modal.msgError("图片插入失败");
     },
   },
 };

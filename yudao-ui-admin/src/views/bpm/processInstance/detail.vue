@@ -170,7 +170,7 @@ export default {
   created() {
     this.id = this.$route.query.id;
     if (!this.id) {
-      this.$message.error('未传递 id 参数，无法查看流程信息');
+      this.$modal.msgError('未传递 id 参数，无法查看流程信息');
       return;
     }
     this.getDetail();
@@ -188,7 +188,7 @@ export default {
       this.processInstanceLoading = true;
       getProcessInstance(this.id).then(response => {
         if (!response.data) {
-          this.$message.error('查询不到流程信息！');
+          this.$modal.msgError('查询不到流程信息！');
           return;
         }
         // 设置流程信息

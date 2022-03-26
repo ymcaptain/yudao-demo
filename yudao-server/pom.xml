@@ -48,6 +48,14 @@
             <artifactId>yudao-module-bpm-impl-flowable</artifactId>
             <version>${revision}</version>
         </dependency>
+
+        <!-- 数据大屏-->
+        <dependency>
+            <groupId>cn.iocoder.boot</groupId>
+            <artifactId>yudao-module-design-impl</artifactId>
+            <version>${revision}</version>
+        </dependency>
+
 <!--        <dependency>-->
 <!--            <groupId>cn.iocoder.boot</groupId>-->
 <!--            <artifactId>yudao-module-bpm-impl-activiti</artifactId>-->

@@ -85,13 +85,13 @@ export default {
     addNewObject() {
       if (this.modelType === "message") {
         if (this.messageIdMap[this.modelObjectForm.id]) {
-          return this.$message.error("该消息已存在，请修改id后重新保存");
+          return this.$modal.msgError("该消息已存在，请修改id后重新保存");
         }
         const messageRef = window.bpmnInstances.moddle.create("bpmn:Message", this.modelObjectForm);
         this.rootElements.push(messageRef);
       } else {
         if (this.signalIdMap[this.modelObjectForm.id]) {
-          return this.$message.error("该信号已存在，请修改id后重新保存");
+          return this.$modal.msgError("该信号已存在，请修改id后重新保存");
         }
         const signalRef = window.bpmnInstances.moddle.create("bpmn:Signal", this.modelObjectForm);
         this.rootElements.push(signalRef);

@@ -13,6 +13,12 @@ public class FileRespVO {
     @ApiModelProperty(value = "文件编号", required = true, example = "1024")
     private Long id;
 
+    @ApiModelProperty(value = "名称", example = "风景图3", notes = "模糊匹配")
+    private String name;
+
+    @ApiModelProperty(value = "图片分组", example = "1")
+    private Long imgGroup;
+
     @ApiModelProperty(value = "文件路径", required = true, example = "yudao.jpg")
     private String path;
 

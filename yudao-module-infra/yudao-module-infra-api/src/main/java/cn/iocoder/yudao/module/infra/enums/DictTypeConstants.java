@@ -1,5 +1,9 @@
 package cn.iocoder.yudao.module.infra.enums;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Getter;
+
 /**
  * Infra 字典类型的枚举类
  *
@@ -17,4 +21,20 @@ public interface DictTypeConstants {
     String CONFIG_TYPE = "infra_config_type"; // 参数配置类型
     String BOOLEAN_STRING = "infra_boolean_string"; // Boolean 是否类型
 
+    @AllArgsConstructor
+    @Getter
+    enum GROUP_TYPE_ENUM{
+
+        OtherGroup(0L,"其他","design_img_group"),
+        Background(1L,"背景","design_img_group"),
+        Image(2L,"图片库","design_img_group"),
+        Material(3L,"素材","design_img_group"),
+        Border(4L,"边框","design_img_group"),
+        Icon(5L,"图标","design_img_group"),
+        AVATAR(6L,"头像","design_img_group");
+
+        private final Long id;
+        private final String name;
+        private final String dict;
+    }
 }

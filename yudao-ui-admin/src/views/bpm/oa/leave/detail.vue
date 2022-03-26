@@ -36,7 +36,7 @@ export default {
   created() {
     this.id = this.$route.query.id;
     if (!this.id) {
-      this.$message.error('未传递 id 参数，无法查看 OA 请假信息');
+      this.$modal.msgError('未传递 id 参数，无法查看 OA 请假信息');
       return;
     }
     this.getDetail();

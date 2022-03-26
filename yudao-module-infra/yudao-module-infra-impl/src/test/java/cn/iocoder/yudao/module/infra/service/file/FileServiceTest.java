@@ -73,6 +73,7 @@ public class FileServiceTest extends BaseDbUnitTest {
     public void testCreateFile_success() throws Exception {
         // 准备参数
         String path = randomString();
+        Long group = 1L;
         byte[] content = ResourceUtil.readBytes("file/erweima.jpg");
         // mock Master 文件客户端
         FileClient client = mock(FileClient.class);
@@ -82,7 +83,7 @@ public class FileServiceTest extends BaseDbUnitTest {
         when(client.getId()).thenReturn(10L);
 
         // 调用
-        String result = fileService.createFile(path, content);
+        String result = fileService.createFile(path,group, content);
         // 断言
         assertEquals(result, url);
         // 校验数据

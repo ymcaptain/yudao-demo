@@ -4,6 +4,7 @@ import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.iocoder.yudao.framework.common.enums.CommonStatusEnum;
 import cn.iocoder.yudao.module.infra.api.file.FileApi;
+import cn.iocoder.yudao.module.infra.enums.DictTypeConstants;
 import cn.iocoder.yudao.module.member.controller.app.user.vo.AppUserUpdateMobileReqVO;
 import cn.iocoder.yudao.module.member.dal.dataobject.user.MemberUserDO;
 import cn.iocoder.yudao.module.member.dal.mysql.user.MemberUserMapper;
@@ -103,7 +104,7 @@ public class MemberUserServiceImpl implements MemberUserService {
     public String updateUserAvatar(Long userId, InputStream avatarFile) throws Exception {
         this.checkUserExists(userId);
         // 创建文件
-        String avatar = fileApi.createFile(IoUtil.readBytes(avatarFile));
+        String avatar = fileApi.createFile(DictTypeConstants.GROUP_TYPE_ENUM.AVATAR.getId(),IoUtil.readBytes(avatarFile));
         // 更新头像路径
         memberUserMapper.updateById(MemberUserDO.builder().id(userId).avatar(avatar).build());
         return avatar;

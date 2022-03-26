@@ -35,7 +35,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public String createFile(String path, byte[] content) throws Exception {
+    public String createFile(String path,Long group, byte[] content) throws Exception {
         // 上传到文件存储器
         FileClient client = fileConfigService.getMasterFileClient();
         Assert.notNull(client, "客户端(master) 不能为空");
@@ -45,6 +45,7 @@ public class FileServiceImpl implements FileService {
         FileDO file = new FileDO();
         file.setConfigId(client.getId());
         file.setPath(path);
+        file.setImgGroup(group);
         file.setUrl(url);
         file.setType(FileTypeUtil.getType(new ByteArrayInputStream(content)));
         file.setSize(content.length);

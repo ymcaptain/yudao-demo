@@ -355,7 +355,7 @@ export default {
         let minDateTime = new Date(this.dateRangeCreateTime[0]).getTime();
         let maxDateTime = new Date(this.dateRangeCreateTime[1]).getTime()
         if (maxDateTime - minDateTime > oneMonthTime) {
-          this.$message.error('时间范围最大为 31 天！');
+          this.$modal.msgError('时间范围最大为 31 天！');
           return false;
         }
       }

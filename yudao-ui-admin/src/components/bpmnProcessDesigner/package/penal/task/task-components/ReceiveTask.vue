@@ -69,7 +69,7 @@ export default {
     },
     createNewMessage() {
       if (this.messageMap[this.newMessageForm.id]) {
-        this.$message.error("该消息已存在，请修改id后重新保存");
+        this.$modal.msgError("该消息已存在，请修改id后重新保存");
         return;
       }
       const newMessage = window.bpmnInstances.moddle.create("bpmn:Message", this.newMessageForm);

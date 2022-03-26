@@ -15,8 +15,8 @@ public interface FileApi {
      * @param content 文件内容
      * @return 文件路径
      */
-   default String createFile(byte[] content) throws Exception {
-       return createFile(IdUtil.fastUUID(), content);
+   default String createFile(Long group,byte[] content) throws Exception {
+       return createFile(IdUtil.fastUUID(),group, content);
    }
 
     /**
@@ -26,6 +26,6 @@ public interface FileApi {
      * @param content 文件内容
      * @return 文件路径
      */
-    String createFile(String path, byte[] content) throws Exception;
+    String createFile(String path,Long group, byte[] content) throws Exception;
 
 }

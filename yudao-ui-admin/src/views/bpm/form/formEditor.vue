@@ -301,7 +301,7 @@ export default {
       }
     })
     clipboard.on('error', e => {
-      this.$message.error('代码复制失败')
+      this.$modal.msgError('代码复制失败')
     })
   },
   created() {

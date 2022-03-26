@@ -13,6 +13,9 @@ import router from './router'
 import directive from './directive' // directive
 import plugins from './plugins' // plugins
 
+import * as echarts from 'echarts'
+import dataV from '@jiaminghi/data-view'
+
 import './assets/icons' // icon
 import './permission' // permission control
 import './tongji' // 百度统计
@@ -27,8 +30,10 @@ import RightToolbar from "@/components/RightToolbar"
 // import 'highlight.js/styles/github-gist.css'
 import {DICT_TYPE, getDictDataLabel, getDictDatas, getDictDatas2} from "@/utils/dict";
 import {getRequest, postRequest } from "@/utils/commonRequest";
+import {registerOption} from '@/components/DataV/registerOption'
 
 // 全局方法挂载
+Vue.prototype.$echarts = echarts
 Vue.prototype.getRequest = getRequest
 Vue.prototype.postRequest = postRequest
 Vue.prototype.getDicts = getDicts
@@ -42,7 +47,7 @@ Vue.prototype.getDictDatas2 = getDictDatas2
 Vue.prototype.getDictDataLabel = getDictDataLabel
 Vue.prototype.DICT_TYPE = DICT_TYPE
 Vue.prototype.handleTree = handleTree
-
+registerOption()
 // 全局组件挂载
 Vue.component('DictTag', DictTag)
 Vue.component('DocAlert', DocAlert)
@@ -57,6 +62,7 @@ import VueMeta from 'vue-meta'
 Vue.use(directive)
 Vue.use(plugins)
 Vue.use(VueMeta)
+Vue.use(dataV)
 // Vue.use(hljs.vuePlugin);
 
 // bpmnProcessDesigner 需要引入

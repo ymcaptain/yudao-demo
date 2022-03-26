@@ -17,7 +17,9 @@ public interface FileMapper extends BaseMapperX<FileDO> {
 
     default PageResult<FileDO> selectPage(FilePageReqVO reqVO) {
         return selectPage(reqVO, new QueryWrapperX<FileDO>()
+                .eqIfPresent("img_group",reqVO.getImgGroup())
                 .likeIfPresent("path", reqVO.getPath())
+                .likeIfPresent("name", reqVO.getName())
                 .likeIfPresent("type", reqVO.getType())
                 .betweenIfPresent("create_time", reqVO.getBeginCreateTime(), reqVO.getEndCreateTime())
                 .orderByDesc("create_time"));

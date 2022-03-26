@@ -267,12 +267,12 @@ export default {
     pemFileBeforeUpload(file) {
       let format = '.' + file.name.split(".")[1];
       if (format !== this.fileAccept) {
-        this.$message.error('请上传指定格式"' + this.fileAccept + '"文件');
+        this.$modal.msgError('请上传指定格式"' + this.fileAccept + '"文件');
         return false;
       }
       let isRightSize = file.size / 1024 / 1024 < 2
       if (!isRightSize) {
-        this.$message.error('文件大小超过 2MB')
+        this.$modal.msgError('文件大小超过 2MB')
       }
       return isRightSize
     },

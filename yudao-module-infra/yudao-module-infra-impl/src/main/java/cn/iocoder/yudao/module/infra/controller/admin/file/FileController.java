@@ -36,15 +36,17 @@ public class FileController {
     @Resource
     private FileService fileService;
 
-    @PostMapping("/upload")
+    @PostMapping("/upload/{group}")
     @ApiOperation("上传文件")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "file", value = "文件附件", required = true, dataTypeClass = MultipartFile.class),
+            @ApiImplicitParam(name = "group", value = "文件组", required = true, dataTypeClass = MultipartFile.class),
             @ApiImplicitParam(name = "path", value = "文件路径", example = "yudaoyuanma.png", dataTypeClass = String.class)
     })
     public CommonResult<String> uploadFile(@RequestParam("file") MultipartFile file,
-                                           @RequestParam("path") String path) throws Exception {
-        return success(fileService.createFile(path, IoUtil.readBytes(file.getInputStream())));
+                                           @RequestParam("path") String path,
+                                           @PathVariable("group") Long group) throws Exception {
+        return success(fileService.createFile(path,group, IoUtil.readBytes(file.getInputStream())));
     }
 
     @DeleteMapping("/delete")

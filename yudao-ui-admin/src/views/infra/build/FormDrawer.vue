@@ -143,7 +143,7 @@ export default {
       }
     })
     clipboard.on('error', e => {
-      this.$message.error('代码复制失败')
+      this.$modal.msgError('代码复制失败')
     })
   },
   beforeDestroy() {
@@ -239,10 +239,10 @@ export default {
             location.origin
           )
         } else {
-          this.$message.error('请使用export default')
+          this.$modal.msgError('请使用export default')
         }
       } catch (err) {
-        this.$message.error(`js错误：${err}`)
+        this.$modal.msgError(`js错误：${err}`)
         console.error(err)
       }
     },

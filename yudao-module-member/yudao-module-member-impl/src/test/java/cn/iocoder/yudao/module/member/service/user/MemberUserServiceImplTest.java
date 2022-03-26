@@ -5,6 +5,7 @@ import cn.iocoder.yudao.framework.common.enums.CommonStatusEnum;
 import cn.iocoder.yudao.framework.common.util.collection.ArrayUtils;
 import cn.iocoder.yudao.framework.redis.config.YudaoRedisAutoConfiguration;
 import cn.iocoder.yudao.module.infra.api.file.FileApi;
+import cn.iocoder.yudao.module.infra.enums.DictTypeConstants;
 import cn.iocoder.yudao.module.member.controller.app.user.vo.AppUserUpdateMobileReqVO;
 import cn.iocoder.yudao.module.member.dal.dataobject.user.MemberUserDO;
 import cn.iocoder.yudao.module.member.dal.mysql.user.MemberUserMapper;
@@ -85,7 +86,7 @@ public class MemberUserServiceImplTest extends BaseDbAndRedisUnitTest {
         ByteArrayInputStream avatarFile = new ByteArrayInputStream(avatarFileBytes);
         // mock 方法
         String avatar = randomString();
-        when(fileApi.createFile(eq(avatarFileBytes))).thenReturn(avatar);
+        when(fileApi.createFile(DictTypeConstants.GROUP_TYPE_ENUM.AVATAR.getId(),eq(avatarFileBytes))).thenReturn(avatar);
         // 调用
         String str = memberUserService.updateUserAvatar(userId, avatarFile);
         // 断言

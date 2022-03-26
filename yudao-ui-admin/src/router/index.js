@@ -56,6 +56,14 @@ export const constantRoutes = [
     path: '/401',
     component: (resolve) => require(['@/views/error/401'], resolve),
     hidden: true
+  },{
+    path: '/design',
+    component: (resolve) => require(['@/views/design/designer/index'], resolve),
+    hidden: true
+  },{
+    path: '/preview',
+    component: (resolve) => require(['@/views/design/preview/index'], resolve),
+    hidden: true
   },
   {
     path: '',
@@ -172,7 +180,8 @@ Router.prototype.push = function push(location) {
 
 export default new Router({
   base: process.env.VUE_APP_APP_NAME ? process.env.VUE_APP_APP_NAME : "/",
-  mode: 'history', // 去掉url中的#
+  // mode: 'history', // 去掉url中的#
+  mode: 'hash', // 部署后不怕刷新
   scrollBehavior: () => ({y: 0}),
   routes: constantRoutes
 })

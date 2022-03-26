@@ -21,6 +21,12 @@ public class FilePageReqVO extends PageParam {
     @ApiModelProperty(value = "文件路径", example = "yudao", notes = "模糊匹配")
     private String path;
 
+    @ApiModelProperty(value = "名称", example = "风景图3", notes = "模糊匹配")
+    private String name;
+
+    @ApiModelProperty(value = "图片分组", example = "1")
+    private Long imgGroup;
+
     @ApiModelProperty(value = "文件类型", example = "jpg", notes = "模糊匹配")
     private String type;
 

@@ -3,6 +3,16 @@
     <doc-alert title="上传下载" url="https://doc.iocoder.cn/file/" />
     <!-- 搜索工作栏 -->
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
+      <el-form-item label="名称" prop="name">
+        <el-input v-model="queryParams.name" placeholder="请输入文件名称" clearable @keyup.enter.native="handleQuery"/>
+      </el-form-item>
+      <el-form-item label="资源分组" prop="path">
+        <el-select v-model="queryParams.imgGroup" placeholder="请选择分组" @keyup.enter.native="handleQuery">
+          <el-option label="所有" value=""></el-option>
+          <el-option v-for="dict in this.getDictDatas(DICT_TYPE.INFRA_IMG_GROUP)"
+                     :key="dict.value" :label="dict.label" :value="parseInt(dict.value)" />
+        </el-select>
+      </el-form-item>
       <el-form-item label="文件路径" prop="path">
         <el-input v-model="queryParams.path" placeholder="请输入文件路径" clearable @keyup.enter.native="handleQuery"/>
       </el-form-item>
@@ -26,17 +36,23 @@
 
     <!-- 列表 -->
     <el-table v-loading="loading" :data="list">
+      <el-table-column label="名称" align="center" prop="name" />
       <el-table-column label="文件名" align="center" prop="path" />
+      <el-table-column label="分组" align="center" prop="imgGroup" >
+        <template slot-scope="scope">
+          <dict-tag :type="DICT_TYPE.INFRA_IMG_GROUP" :value="scope.row.imgGroup" />
+        </template>
+      </el-table-column>
       <el-table-column label="URL" align="center" prop="url" />
       <el-table-column label="文件大小" align="center" prop="size" width="120" :formatter="sizeFormat" />
       <el-table-column label="文件类型" align="center" prop="type" width="80" />
-<!--      <el-table-column label="文件内容" align="center" prop="content">-->
-<!--        <template slot-scope="scope">-->
-<!--          <img v-if="scope.row.type === 'jpg' || scope.row.type === 'png' || scope.row.type === 'gif'"-->
-<!--               width="200px" :src="getFileUrl + scope.row.id">-->
-<!--          <i v-else>非图片，无法预览</i>-->
-<!--        </template>-->
-<!--      </el-table-column>-->
+      <el-table-column label="文件内容" align="center" prop="content">
+        <template slot-scope="scope">
+          <el-image v-if="scope.row.type === 'jpg' || scope.row.type === 'png' || scope.row.type === 'gif'"
+                    style="height: 100px;width: 100px" :src="scope.row.url" fit="contain" ></el-image>
+          <i v-else>非图片，无法预览</i>
+        </template>
+      </el-table-column>
       <el-table-column label="上传时间" align="center" prop="createTime" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.createTime) }}</span>
@@ -55,8 +71,14 @@
 
     <!-- 对话框(添加 / 修改) -->
     <el-dialog :title="upload.title" :visible.sync="upload.open" width="400px" append-to-body>
+      <div>
+        <el-select v-model="upload.group" placeholder="请选择分组" @keyup.enter.native="handleQuery">
+          <el-option v-for="dict in this.getDictDatas(DICT_TYPE.INFRA_IMG_GROUP)"
+                     :key="dict.value" :label="dict.label" :value="parseInt(dict.value)" />
+        </el-select>
+      </div>
       <el-upload ref="upload" :limit="1" accept=".jpg, .png, .gif" :auto-upload="false" drag
-                 :headers="upload.headers" :action="upload.url" :data="upload.data" :disabled="upload.isUploading"
+                 :headers="upload.headers" :action="upload.url + '/' +upload.group" :data="upload.data" :disabled="upload.isUploading"
                  :on-change="handleFileChange"
                  :on-progress="handleFileUploadProgress"
                  :on-success="handleFileSuccess">
@@ -100,6 +122,8 @@ export default {
         pageNo: 1,
         pageSize: 10,
         path: null,
+        name: null,
+        imgGroup: null,
         type: null,
       },
       // 用户导入参数
@@ -107,6 +131,7 @@ export default {
         open: false, // 是否显示弹出层
         title: "", // 弹出层标题
         isUploading: false, // 是否禁用上传
+        group : 0,
         url: process.env.VUE_APP_BASE_API + "/admin-api/infra/file/upload", // 请求地址
         headers: { Authorization: "Bearer " + getToken() }, // 设置上传的请求头部
         data: {} // 上传的额外数据，用于文件名

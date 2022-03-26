@@ -26,7 +26,7 @@ public interface FileService {
      * @param content 文件内容
      * @return 文件路径
      */
-    String createFile(String path, byte[] content) throws Exception;
+    String createFile(String path,Long group, byte[] content) throws Exception;
 
     /**
      * 删除文件

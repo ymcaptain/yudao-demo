@@ -37,6 +37,14 @@ public class FileDO extends BaseDO {
      */
     private String path;
     /**
+     * 名称
+     */
+    private String name;
+    /**
+     * 图片分组
+     */
+    private Long imgGroup;
+    /**
      * 访问地址
      */
     private String url;

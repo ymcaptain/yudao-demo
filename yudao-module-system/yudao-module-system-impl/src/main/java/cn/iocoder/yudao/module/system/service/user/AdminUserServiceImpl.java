@@ -8,6 +8,7 @@ import cn.iocoder.yudao.framework.common.exception.ServiceException;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.framework.common.util.collection.CollectionUtils;
 import cn.iocoder.yudao.module.infra.api.file.FileApi;
+import cn.iocoder.yudao.module.infra.enums.DictTypeConstants;
 import cn.iocoder.yudao.module.system.controller.admin.user.vo.profile.UserProfileUpdatePasswordReqVO;
 import cn.iocoder.yudao.module.system.controller.admin.user.vo.profile.UserProfileUpdateReqVO;
 import cn.iocoder.yudao.module.system.controller.admin.user.vo.user.*;
@@ -122,7 +123,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     public String updateUserAvatar(Long id, InputStream avatarFile) throws Exception {
         this.checkUserExists(id);
         // 存储文件
-        String avatar = fileApi.createFile(IoUtil.readBytes(avatarFile));
+        String avatar = fileApi.createFile(DictTypeConstants.GROUP_TYPE_ENUM.AVATAR.getId(),IoUtil.readBytes(avatarFile));
         // 更新路径
         AdminUserDO sysUserDO = new AdminUserDO();
         sysUserDO.setId(id);
