@@ -356,7 +356,9 @@ export default {
         cptHeight: item.cptHeight,
         cptX: item.cptX, cptY: item.cptY, cptZ: item.cptZ
       }
+      this.$refs['configBar'].toBasic();
       this.$refs['configBar'].updateData(currentCptPosition);
+      this.initContainerSize();
     },
     dragStart(copyDom) {//从组件栏拿起组件
       this.copyDom = copyDom;

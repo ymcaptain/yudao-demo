@@ -91,7 +91,7 @@ export default {
         if(this.currentCpt.option.cptDataForm){
           this.cptDataFormShow = true
         }else{
-          this.configTab = 'custom'//解決上一組件沒有数据表单导致tab栏未选中bug
+          this.configTab = 'basic'//解決上一組件沒有数据表单导致tab栏未选中bug
         }
       }
     },
@@ -100,8 +100,8 @@ export default {
     dataPollEnable: {
       get(){
         return !!(this.currentCpt.option.cptDataForm
-            && this.currentCpt.option.cptDataForm.pollTime
-            && this.currentCpt.option.cptDataForm.pollTime !== 0);
+          && this.currentCpt.option.cptDataForm.pollTime
+          && this.currentCpt.option.cptDataForm.pollTime !== 0);
       },
       set(newValue){
         if(newValue){
@@ -117,7 +117,7 @@ export default {
   data(){
     return{
       cptDataFormShow:false,
-      configTab: 'custom',
+      configTab: 'basic',
       currentPosition:{
         cptWidth:30,cptHeight:30,cptX:0,cptY:0,cptZ:0
       },
@@ -132,7 +132,11 @@ export default {
     refreshCptData(){
       this.$emit('refreshCptData');
     },
+    toBasic(){
+      this.configTab = 'basic';
+    },
     showConfigBar(){
+      this.toBasic();
       this.configBarShow = true;
     },
     updateData(currentPosition){
