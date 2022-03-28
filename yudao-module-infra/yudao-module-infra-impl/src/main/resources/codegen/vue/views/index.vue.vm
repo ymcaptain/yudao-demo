@@ -305,7 +305,7 @@ export default {
 #set ($selectListQuery = $column.selectTableName + "QueryList")
     /** 获取${column.javaField}中文名称 **/
     ${column.javaField}TableName(id){
-      for (let i = 0; i < this.selectLists.${selectListQuery}.length}; i++) {
+      for (let i = 0; i < this.selectLists.${selectListQuery}.length; i++) {
         let item = this.selectLists.${selectListQuery}[i];
         if (item.id === id.toString()){
           return item.name;
