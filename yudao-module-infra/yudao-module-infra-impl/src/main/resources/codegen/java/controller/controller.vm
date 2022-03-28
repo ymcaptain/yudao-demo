@@ -119,6 +119,7 @@ public class ${sceneEnum.prefixClass}${table.className}Controller {
     #if ($sceneEnum.scene == 1)    @PreAuthorize("@ss.hasPermission('${permissionPrefix}:query')")#end
 
     public CommonResult<List<SelectCommonVo>> get${simpleClassName}SelectList(SelectListQueryVo queryVO) {
+        queryVO.isWarn();
         String name = queryVO.getTableName();
 #foreach ($column in $columns)
     #if("" != $column.selectTableName)
