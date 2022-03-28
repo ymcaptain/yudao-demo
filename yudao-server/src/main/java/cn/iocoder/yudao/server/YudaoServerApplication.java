@@ -9,6 +9,7 @@ public class YudaoServerApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(YudaoServerApplication.class, args);
+        System.out.println("(♥◠‿◠)ﾉﾞ  平台启动成功   ლ(´ڡ`ლ)ﾞ ");
     }
 
 }
