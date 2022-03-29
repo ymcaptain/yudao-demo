@@ -77,7 +77,7 @@
           <el-input v-model="form.remark" placeholder="请输入备注" />
         </el-form-item>
         <el-form-item label="存储器" prop="storage">
-          <el-select v-model="form.storage" placeholder="请选择存储器" :disabled="form.id">
+          <el-select v-model="form.storage" placeholder="请选择存储器" :disabled="form.id>0">
             <el-option v-for="dict in this.getDictDatas(DICT_TYPE.INFRA_FILE_STORAGE)"
                        :key="dict.value" :label="dict.label" :value="parseInt(dict.value)" />
           </el-select>
