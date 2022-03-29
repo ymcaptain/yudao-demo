@@ -16,25 +16,6 @@
         <el-form-item label="背景颜色">
           <el-color-picker v-model="formData.bgColor" show-alpha/>
         </el-form-item>
-        <el-form-item label="背景图片">
-          <div v-if="formData.bgImg" style="width: 100%;height: 100%;position: relative">
-            <img :src="fileUrl+'/file/img/'+formData.bgImg" style="width: 100%;height: 100%;"/>
-            <i style="position: absolute;z-index: 6;right: 0;font-size: 20px;color: #FFCCCC"
-               class="el-icon-delete" @click.stop="handleRemove"></i>
-          </div>
-          <div v-else class="uploadItem" @click="showGallery">
-            <i style="font-size: 40px;color: #aaa" class="el-icon-plus"></i>
-          </div>
-<!--          <el-upload
-              :action="fileUrl+'/file/upload?dir=imgPool'"
-              :show-file-list="false"
-              :headers="uploadHeaders"
-              list-type="picture-card"
-              :on-success="handleBgImgSuccess"
-              :on-remove="handleRemove"
-              :before-upload="beforeBgImgUpload">
-          </el-upload>-->
-        </el-form-item>
         <el-form-item label="个性链接">
           <el-input disabled v-model="formData.id" autocomplete="off"/>
         </el-form-item>
@@ -98,32 +79,12 @@ export default {
       this.formData.scaleY = split[1]
       this.$emit('updateScale');
     },
-    showGallery(){
-      this.$refs.gallery.opened();
-    },
     confirmCheck(fileUrl, fileId){
       this.formData.bgImg = fileId;
     },
     handleRemove(){
       this.formData.bgImg = ''
-    },
-    /*handleBgImgSuccess(res){
-      if (res.code !== 1){
-        this.$modal.msgError(res.msg)
-      }
-      this.formData.bgImg = res.data;
-    },
-    beforeBgImgUpload(file){
-      const isIMG = file.type.substr(0,5) === 'image';
-      const isLt5M = file.size / 1024 / 1024 < 25;
-      if (!isIMG) {
-        this.$modal.msgError('上传图片只能是图片格式!');
-      }
-      if (!isLt5M) {
-        this.$modal.msgError('上传图片大小不能超过 25MB!');
-      }
-      return isIMG && isLt5M;
-    },*/
+    }
   }
 }
 </script>

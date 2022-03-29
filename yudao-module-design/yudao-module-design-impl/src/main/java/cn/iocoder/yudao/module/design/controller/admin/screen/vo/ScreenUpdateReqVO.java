@@ -18,9 +18,6 @@ public class ScreenUpdateReqVO extends ScreenBaseVO {
     @ApiModelProperty(value = "描述")
     private String simpleDesc;
 
-    @ApiModelProperty(value = "背景图片")
-    private String bgImg;
-
     @ApiModelProperty(value = "背景颜色")
     private String bgColor;
 

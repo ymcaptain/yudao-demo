@@ -33,10 +33,6 @@ public class ScreenDO extends BaseDO {
      */
     private String simpleDesc;
     /**
-     * 背景图片
-     */
-    private String bgImg;
-    /**
      * 背景颜色
      */
     private String bgColor;
@@ -52,16 +48,6 @@ public class ScreenDO extends BaseDO {
      * 页面组件
      */
     private String components;
-    /**
-     * 设计预览图
-     */
-    private String designImgId;
-    /**
-     * 禁用状态
-     *
-     * 枚举 {@link TODO common_status 对应的类}
-     */
-    private Integer state;
     /**
      * 访问码
      */

@@ -21,9 +21,6 @@ public class ScreenExportReqVO {
     @ApiModelProperty(value = "屏幕比例Y")
     private Integer scaleY;
 
-    @ApiModelProperty(value = "设计预览图")
-    private String designImgId;
-
     @ApiModelProperty(value = "禁用状态")
     private Integer state;
 

@@ -51,6 +51,10 @@ public class ScreenController {
     @ApiOperation("创建数据大屏")
     @PreAuthorize("@ss.hasPermission('design:screen:create')")
     public CommonResult<Long> createScreen(@Valid @RequestBody ScreenCreateReqVO createReqVO) {
+        createReqVO.setScaleX(16);
+        createReqVO.setScaleY(9);
+        createReqVO.setBgColor("#000");
+        createReqVO.setCountView(0);
         return success(screenService.createScreen(createReqVO));
     }
 
@@ -129,6 +133,15 @@ public class ScreenController {
                           @PathVariable("viewCode") String viewCode){
         ScreenDO design = screenService.getScreen(id);
         if (mode == null || mode == 1){//浏览状态
+            Integer countView = design.getCountView();
+            if (countView == null) {
+                countView = 1;
+            } else {
+                countView = countView + 1;
+            }
+            design.setCountView(countView);
+            screenService.updateScreen(ScreenConvert.INSTANCE.convertUpdate(design));
+
             if (StringUtils.isNotBlank(design.getViewCode()) && !viewCode.equals(design.getViewCode())){
                 return success("NEED_AUTH");
             }

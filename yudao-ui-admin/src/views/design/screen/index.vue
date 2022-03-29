@@ -9,9 +9,6 @@
       <el-form-item label="访问码" prop="viewCode">
         <el-input v-model="queryParams.viewCode" placeholder="请输入访问码" clearable @keyup.enter.native="handleQuery"/>
       </el-form-item>
-      <el-form-item label="访问量" prop="countView">
-        <el-input v-model="queryParams.countView" placeholder="请输入访问量" clearable @keyup.enter.native="handleQuery"/>
-      </el-form-item>
       <el-form-item label="创建时间">
         <el-date-picker v-model="dateRangeCreateTime" style="width: 240px" value-format="yyyy-MM-dd"
                         type="daterange" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期" />
@@ -76,9 +73,6 @@
         </el-form-item>
         <el-form-item label="访问码" prop="viewCode">
           <el-input v-model="form.viewCode" placeholder="请输入访问码" />
-        </el-form-item>
-        <el-form-item label="访问量" prop="countView">
-          <el-input v-model="form.countView" placeholder="请输入访问量" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">

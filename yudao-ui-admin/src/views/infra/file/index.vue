@@ -176,6 +176,7 @@ export default {
     resetQuery() {
       this.dateRangeCreateTime = [];
       this.resetForm("queryForm");
+      this.queryParams.imgGroup = undefined;
       this.handleQuery();
     },
     /** 新增按钮操作 */

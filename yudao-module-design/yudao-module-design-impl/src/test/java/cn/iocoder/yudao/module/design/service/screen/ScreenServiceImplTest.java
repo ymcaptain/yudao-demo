@@ -110,8 +110,6 @@ public class ScreenServiceImplTest extends BaseDbUnitTest {
            o.setTitle(null);
            o.setScaleX(null);
            o.setScaleY(null);
-           o.setDesignImgId(null);
-           o.setState(null);
            o.setViewCode(null);
            o.setCountView(null);
            o.setCreateTime(null);
@@ -123,10 +121,6 @@ public class ScreenServiceImplTest extends BaseDbUnitTest {
        screenMapper.insert(cloneIgnoreId(dbScreen, o -> o.setScaleX(null)));
        // 测试 scaleY 不匹配
        screenMapper.insert(cloneIgnoreId(dbScreen, o -> o.setScaleY(null)));
-       // 测试 designImgId 不匹配
-       screenMapper.insert(cloneIgnoreId(dbScreen, o -> o.setDesignImgId(null)));
-       // 测试 state 不匹配
-       screenMapper.insert(cloneIgnoreId(dbScreen, o -> o.setState(null)));
        // 测试 viewCode 不匹配
        screenMapper.insert(cloneIgnoreId(dbScreen, o -> o.setViewCode(null)));
        // 测试 countView 不匹配
@@ -161,8 +155,6 @@ public class ScreenServiceImplTest extends BaseDbUnitTest {
            o.setTitle(null);
            o.setScaleX(null);
            o.setScaleY(null);
-           o.setDesignImgId(null);
-           o.setState(null);
            o.setViewCode(null);
            o.setCountView(null);
            o.setCreateTime(null);
@@ -174,10 +166,6 @@ public class ScreenServiceImplTest extends BaseDbUnitTest {
        screenMapper.insert(cloneIgnoreId(dbScreen, o -> o.setScaleX(null)));
        // 测试 scaleY 不匹配
        screenMapper.insert(cloneIgnoreId(dbScreen, o -> o.setScaleY(null)));
-       // 测试 designImgId 不匹配
-       screenMapper.insert(cloneIgnoreId(dbScreen, o -> o.setDesignImgId(null)));
-       // 测试 state 不匹配
-       screenMapper.insert(cloneIgnoreId(dbScreen, o -> o.setState(null)));
        // 测试 viewCode 不匹配
        screenMapper.insert(cloneIgnoreId(dbScreen, o -> o.setViewCode(null)));
        // 测试 countView 不匹配
@@ -189,7 +177,6 @@ public class ScreenServiceImplTest extends BaseDbUnitTest {
        reqVO.setTitle(null);
        reqVO.setScaleX(null);
        reqVO.setScaleY(null);
-       reqVO.setDesignImgId(null);
        reqVO.setState(null);
        reqVO.setViewCode(null);
        reqVO.setCountView(null);
