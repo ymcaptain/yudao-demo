@@ -11,8 +11,10 @@
 
     <select id="selectList" resultType="cn.iocoder.yudao.module.infra.api.select.vo.SelectCommonVo">
         select ${id} as id, ${name} as name from ${tableName}
+        where deleted = 0
         <if test="whereBegin != null  and whereEnd != null and whereBegin != '' and whereEnd != '' ">
-            where ${whereBegin} = #{whereEnd}
+            and ${whereBegin} = #{whereEnd}
         </if>
     </select>
+
 </mapper>
