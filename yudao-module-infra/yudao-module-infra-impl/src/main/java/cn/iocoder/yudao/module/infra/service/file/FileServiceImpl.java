@@ -2,6 +2,7 @@ package cn.iocoder.yudao.module.infra.service.file;
 
 import cn.hutool.core.io.FileTypeUtil;
 import cn.hutool.core.lang.Assert;
+import cn.hutool.core.util.URLUtil;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.framework.file.core.client.FileClient;
 import cn.iocoder.yudao.module.infra.controller.admin.file.vo.file.FilePageReqVO;
@@ -39,15 +40,26 @@ public class FileServiceImpl implements FileService {
         // 上传到文件存储器
         FileClient client = fileConfigService.getMasterFileClient();
         Assert.notNull(client, "客户端(master) 不能为空");
-        String url = client.upload(content, path);
+        String type = FileTypeUtil.getType(new ByteArrayInputStream(content));
+        String filePath = "";
+        if (!path.endsWith(type)){
+            filePath = path + "." + type;
+        }else{
+            filePath = path;
+
+        }
+
+        filePath = URLUtil.encode(filePath,"utf-8");
+        String url = client.upload(content, filePath);
 
         // 保存到数据库
         FileDO file = new FileDO();
+        file.setName(path.replace(".", "").replace(type,""));
         file.setConfigId(client.getId());
-        file.setPath(path);
+        file.setPath(filePath);
         file.setImgGroup(group);
         file.setUrl(url);
-        file.setType(FileTypeUtil.getType(new ByteArrayInputStream(content)));
+        file.setType(type);
         file.setSize(content.length);
         fileMapper.insert(file);
         return url;

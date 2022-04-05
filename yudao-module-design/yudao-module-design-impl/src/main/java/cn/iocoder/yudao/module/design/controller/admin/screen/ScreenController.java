@@ -18,12 +18,11 @@ import java.io.IOException;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.framework.common.pojo.CommonResult;
 
-import static cn.iocoder.yudao.framework.common.pojo.CommonResult.error;
-import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
-
 import cn.iocoder.yudao.framework.excel.core.util.ExcelUtils;
 
 import cn.iocoder.yudao.framework.operatelog.core.annotations.OperateLog;
+
+import static cn.iocoder.yudao.framework.common.pojo.CommonResult.*;
 import static cn.iocoder.yudao.framework.operatelog.core.enums.OperateTypeEnum.*;
 
 import cn.iocoder.yudao.module.infra.api.select.SelectListApi;
@@ -143,7 +142,7 @@ public class ScreenController {
             screenService.updateScreen(ScreenConvert.INSTANCE.convertUpdate(design));
 
             if (StringUtils.isNotBlank(design.getViewCode()) && !viewCode.equals(design.getViewCode())){
-                return success("NEED_AUTH");
+                return successMessage("NEED_AUTH");
             }
         }
         return success(ScreenConvert.INSTANCE.convertUpdate(design));

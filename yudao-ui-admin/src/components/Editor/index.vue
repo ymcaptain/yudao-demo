@@ -6,6 +6,7 @@
       :on-success="handleUploadSuccess"
       :on-error="handleUploadError"
       name="file"
+      :data="upData"
       :show-file-list="false"
       :headers="headers"
       style="display: none"
@@ -60,7 +61,10 @@ export default {
   },
   data() {
     return {
-      uploadUrl: process.env.VUE_APP_BASE_API + "/common/upload", // 上传的图片服务器地址
+      upData:{
+        path:""
+      },
+      uploadUrl: process.env.VUE_APP_BASE_API + "/admin-api/infra/file/upload/3", // 上传的图片服务器地址
       headers: {
         Authorization: "Bearer " + getToken()
       },
@@ -158,6 +162,7 @@ export default {
     },
     // 上传前校检格式和大小
     handleBeforeUpload(file) {
+      this.upData.path = file.name;
       // 校检文件大小
       if (this.fileSize) {
         const isLt = file.size / 1024 / 1024 < this.fileSize;
@@ -172,11 +177,11 @@ export default {
       // 获取富文本组件实例
       let quill = this.Quill;
       // 如果上传成功
-      if (res.code == 200) {
+      if (res.code === 0) {
         // 获取光标所在位置
         let length = quill.getSelection().index;
         // 插入图片  res.url为服务器返回的图片地址
-        quill.insertEmbed(length, "image", process.env.VUE_APP_BASE_API + res.fileName);
+        quill.insertEmbed(length, "image", res.data);
         // 调整光标到最后
         quill.setSelection(length + 1);
       } else {
