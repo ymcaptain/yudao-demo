@@ -31,6 +31,21 @@ import java.util.List;
 import static cn.iocoder.yudao.framework.common.pojo.CommonResult.error;
 import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
 import static cn.iocoder.yudao.framework.operatelog.core.enums.OperateTypeEnum.EXPORT;
+import cn.iocoder.yudao.framework.excel.core.util.ExcelUtils;
+
+import cn.iocoder.yudao.framework.operatelog.core.annotations.OperateLog;
+
+import static cn.iocoder.yudao.framework.common.pojo.CommonResult.*;
+import static cn.iocoder.yudao.framework.operatelog.core.enums.OperateTypeEnum.*;
+
+import cn.iocoder.yudao.module.infra.api.select.SelectListApi;
+import cn.iocoder.yudao.module.infra.api.select.vo.SelectCommonVo;
+import cn.iocoder.yudao.module.infra.api.select.vo.SelectListQueryVo;
+
+import cn.iocoder.yudao.module.design.controller.admin.screen.vo.*;
+import cn.iocoder.yudao.module.design.dal.dataobject.screen.ScreenDO;
+import cn.iocoder.yudao.module.design.convert.screen.ScreenConvert;
+import cn.iocoder.yudao.module.design.service.screen.ScreenService;
 
 @Api(tags = "管理后台 - 数据大屏")
 @RestController
@@ -143,7 +158,7 @@ public class ScreenController {
 
             // TODO @宋康帅：适合抛出业务异常。
             if (StringUtils.isNotBlank(design.getViewCode()) && !viewCode.equals(design.getViewCode())){
-                return success("NEED_AUTH");
+                return successMessage("NEED_AUTH");
             }
         }
         return success(ScreenConvert.INSTANCE.convertUpdate(design));

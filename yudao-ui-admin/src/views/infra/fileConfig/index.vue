@@ -301,8 +301,7 @@ export default {
     /** 测试按钮操作 */
     handleTest(row) {
       testFileConfig(row.id).then((response) => {
-        // TODO @宋康帅：response.data 吧？？？
-        this.$modal.alert("测试通过，上传文件成功！访问地址：" + response.msg);
+        this.$modal.alert("测试通过，上传文件成功！访问地址：" + response.data);
       }).catch(() => {});
     },
   }
