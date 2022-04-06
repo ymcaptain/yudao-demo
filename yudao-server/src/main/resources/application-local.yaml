@@ -48,6 +48,7 @@ spring:
           url: jdbc:mysql://127.0.0.1:3306/${spring.datasource.dynamic.datasource.master.name}?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=UTF-8&serverTimezone=CTT
           driver-class-name: com.mysql.jdbc.Driver
           username: root
+          ## TODO @宋康帅：这个改成 123456 把。不然 pr 到 master 会无法合并
           password: xiaoshuai
 #        slave: # 模拟从库，可根据自己需要修改
 #          name: ruoyi-vue-pro

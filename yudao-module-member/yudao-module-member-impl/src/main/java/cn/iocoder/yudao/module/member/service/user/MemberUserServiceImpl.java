@@ -104,7 +104,7 @@ public class MemberUserServiceImpl implements MemberUserService {
     public String updateUserAvatar(Long userId, InputStream avatarFile) throws Exception {
         this.checkUserExists(userId);
         // 创建文件
-        String avatar = fileApi.createFile(DictTypeConstants.GROUP_TYPE_ENUM.AVATAR.getId(),IoUtil.readBytes(avatarFile));
+        String avatar = fileApi.createFile(DictTypeConstants.GROUP_TYPE_ENUM.AVATAR.getId(), IoUtil.readBytes(avatarFile));
         // 更新头像路径
         memberUserMapper.updateById(MemberUserDO.builder().id(userId).avatar(avatar).build());
         return avatar;

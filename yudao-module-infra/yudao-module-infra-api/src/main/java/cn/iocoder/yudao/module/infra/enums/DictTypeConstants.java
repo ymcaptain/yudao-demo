@@ -1,7 +1,6 @@
 package cn.iocoder.yudao.module.infra.enums;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 
 /**
@@ -21,6 +20,7 @@ public interface DictTypeConstants {
     String CONFIG_TYPE = "infra_config_type"; // 参数配置类型
     String BOOLEAN_STRING = "infra_boolean_string"; // Boolean 是否类型
 
+    // TODO @宋康帅：单独一个枚举类
     @AllArgsConstructor
     @Getter
     enum GROUP_TYPE_ENUM{

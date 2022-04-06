@@ -16,6 +16,7 @@ public class StrUtils {
         return StrUtil.maxLength(str, maxLength - 3); // -3 的原因，是该方法会补充 ... 恰好
     }
 
+    // TODO @宋康帅：使用 hutool 的工具方法，有对应的
     /**
      * 指定字符串的
      * @param str

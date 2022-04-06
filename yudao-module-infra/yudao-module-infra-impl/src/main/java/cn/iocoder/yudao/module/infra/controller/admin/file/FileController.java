@@ -36,6 +36,7 @@ public class FileController {
     @Resource
     private FileService fileService;
 
+    // TODO @宋康帅：上传时，group 是可选字段。如果不传递，默认到其它。不使用 path 参数
     @PostMapping("/upload/{group}")
     @ApiOperation("上传文件")
     @ApiImplicitParams({

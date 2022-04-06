@@ -43,6 +43,7 @@ public class FileDO extends BaseDO {
     /**
      * 图片分组
      */
+    // TODO @宋康帅：文件分组。字段要么用 group；要么担心关键字，就用 category；不然一个文件 DO 类，里面有 imgGroup 这样的命名，不太合理
     private Long imgGroup;
     /**
      * 访问地址

@@ -11,6 +11,7 @@
 
     <artifactId>yudao-module-design-api</artifactId>
 
+    <!-- TODO 宋康帅：不需要 8 这个 properties，pom 和其它的 api 保持一致哈 -->
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>

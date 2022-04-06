@@ -3,9 +3,10 @@ package cn.iocoder.yudao.framework.common.util.string;
 import cn.iocoder.yudao.framework.common.exception.ServiceException;
 import cn.iocoder.yudao.framework.common.exception.enums.GlobalErrorCodeConstants;
 
+// TODO @宋康帅：放到 mybatis 里，属于 db 那的工具类。引用工具类使，要保证代码的规范性
 /**
  * sql操作工具类
- * 
+ *
  * @author ruoyi
  */
 public class SqlUtil
@@ -33,6 +34,7 @@ public class SqlUtil
             return false;
         }
 
+        // TODO @宋康帅：@SQL_WORD_ERROR：挪到 mybatis 自己搞的错误码
         if (!value.matches(SQL_PATTERN)){
             throw new ServiceException(GlobalErrorCodeConstants.SQL_WORD_ERROR);
         }

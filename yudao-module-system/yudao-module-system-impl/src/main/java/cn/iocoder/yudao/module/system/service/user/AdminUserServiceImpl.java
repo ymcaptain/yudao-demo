@@ -123,7 +123,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     public String updateUserAvatar(Long id, InputStream avatarFile) throws Exception {
         this.checkUserExists(id);
         // 存储文件
-        String avatar = fileApi.createFile(DictTypeConstants.GROUP_TYPE_ENUM.AVATAR.getId(),IoUtil.readBytes(avatarFile));
+        String avatar = fileApi.createFile(DictTypeConstants.GROUP_TYPE_ENUM.AVATAR.getId(), IoUtil.readBytes(avatarFile));
         // 更新路径
         AdminUserDO sysUserDO = new AdminUserDO();
         sysUserDO.setId(id);

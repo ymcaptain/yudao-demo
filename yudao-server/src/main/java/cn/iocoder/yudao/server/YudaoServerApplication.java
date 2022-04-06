@@ -9,6 +9,7 @@ public class YudaoServerApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(YudaoServerApplication.class, args);
+        // TODO @宋康帅：是不是用 logger.info 会更好一些呀
         System.out.println("(♥◠‿◠)ﾉﾞ  平台启动成功   ლ(´ڡ`ლ)ﾞ ");
     }
 

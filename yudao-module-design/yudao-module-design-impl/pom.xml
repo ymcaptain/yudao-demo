@@ -14,12 +14,14 @@
 
     <name>${project.artifactId}</name>
 
+    <!-- TODO 宋康帅：不需要 8 这个 properties，pom 和其它的 impl 保持一致哈 -->
+
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
 
-    <dependencies>  <!-- 5. 新增依赖，这里引入的都是比较常用的业务组件、技术组件 --><!-- 业务组件 -->
+    <dependencies>
         <dependency>
             <groupId>cn.iocoder.boot</groupId>
             <artifactId>yudao-module-design-api</artifactId>

@@ -4,9 +4,8 @@ import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.ZipUtil;
 import cn.iocoder.yudao.framework.common.pojo.CommonResult;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
-import cn.iocoder.yudao.framework.common.util.io.FileUtils;
-import cn.iocoder.yudao.framework.security.core.LoginUser;
-import cn.iocoder.yudao.framework.security.core.util.SecurityFrameworkUtils;
+import cn.iocoder.yudao.framework.common.util.collection.CollectionUtils;
+import cn.iocoder.yudao.framework.common.util.servlet.ServletUtils;
 import cn.iocoder.yudao.module.infra.controller.admin.codegen.vo.CodegenDetailRespVO;
 import cn.iocoder.yudao.module.infra.controller.admin.codegen.vo.CodegenPreviewRespVO;
 import cn.iocoder.yudao.module.infra.controller.admin.codegen.vo.CodegenUpdateReqVO;
@@ -17,10 +16,7 @@ import cn.iocoder.yudao.module.infra.convert.codegen.CodegenConvert;
 import cn.iocoder.yudao.module.infra.dal.dataobject.codegen.CodegenColumnDO;
 import cn.iocoder.yudao.module.infra.dal.dataobject.codegen.CodegenTableDO;
 import cn.iocoder.yudao.module.infra.dal.dataobject.codegen.SchemaTableDO;
-import cn.iocoder.yudao.module.infra.enums.ErrorCodeConstants;
 import cn.iocoder.yudao.module.infra.service.codegen.CodegenService;
-import cn.iocoder.yudao.framework.common.util.collection.CollectionUtils;
-import cn.iocoder.yudao.framework.common.util.servlet.ServletUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -41,7 +37,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static cn.iocoder.yudao.framework.common.pojo.CommonResult.error;
 import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
 import static cn.iocoder.yudao.framework.security.core.util.SecurityFrameworkUtils.getLoginUserId;
 
@@ -172,6 +167,7 @@ public class CodegenController {
         ServletUtils.writeAttachment(response, "codegen.zip", outputStream.toByteArray());
     }
 
+    // TODO @宋康帅：/gen-local。方法名也叫 genLocalCodegen。保持统一
     @ApiOperation("本地项目生成源码")
     @GetMapping("/genLocal")
     @ApiImplicitParam(name = "tableId", value = "表编号", required = true, example = "1024", dataTypeClass = Long.class)
@@ -180,6 +176,7 @@ public class CodegenController {
         // 生成代码
         Map<String, String> codes = codegenService.generationCodes(tableId);
         // 构建 zip 包
+        // TODO @宋康帅：本地的话，直接写入即可，不用 zip 解压；需要考虑 mac 和 windows 的差异，最好使用 hutool File 工具类
         String[] paths = codes.keySet().toArray(new String[0]);
         ByteArrayInputStream[] ins = codes.values().stream().map(IoUtil::toUtf8Stream).toArray(ByteArrayInputStream[]::new);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();

@@ -127,6 +127,7 @@ public class YudaoWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdap
                     // 静态资源，可匿名访问
                     .antMatchers(HttpMethod.GET, "/*.html", "/**/*.html", "/**/*.css", "/**/*.js").permitAll()
                     .antMatchers(HttpMethod.GET, "/admin-ui/**").permitAll()
+                    // TODO @宋康帅：大屏中，增加一个权限规则。这里不直接修改
                     .antMatchers(HttpMethod.GET, buildAdminApi("/design/screen/getById/**")).permitAll()
                     .antMatchers(HttpMethod.GET, buildAdminApi("/design/screen/authViewCode")).permitAll()
                     // 设置 App API 无需认证

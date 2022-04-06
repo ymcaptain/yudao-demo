@@ -53,6 +53,7 @@
           <el-button type="text" size="small" icon="el-icon-edit" @click="handleEditTable(scope.row)" v-hasPermi="['infra:codegen:update']">编辑</el-button>
           <el-button type="text" size="small" icon="el-icon-delete" @click="handleDelete(scope.row)" v-hasPermi="['infra:codegen:delete']">删除</el-button>
           <el-button type="text" size="small" icon="el-icon-refresh" @click="handleSynchDb(scope.row)" v-hasPermi="['infra:codegen:update']">同步</el-button>
+          <!-- TODO @宋康帅：一键编程=》导入本地；然后做个二次确认，说明下会覆盖本地的类之类的。 -->
           <el-button type="text" size="small" icon="el-icon-place" @click="handleGenTableLocal(scope.row)" v-hasPermi="['infra:codegen:download']">一键编程</el-button>
           <el-button type="text" size="small" icon="el-icon-download" @click="handleGenTable(scope.row)" v-hasPermi="['infra:codegen:download']">下载代码</el-button>
         </template>
