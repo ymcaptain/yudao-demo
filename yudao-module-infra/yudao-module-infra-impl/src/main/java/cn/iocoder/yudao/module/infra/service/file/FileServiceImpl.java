@@ -40,6 +40,7 @@ public class FileServiceImpl implements FileService {
         // 上传到文件存储器
         FileClient client = fileConfigService.getMasterFileClient();
         Assert.notNull(client, "客户端(master) 不能为空");
+        // TODO @宋康帅：这个 type 的计算方式，需要讨论下
         String type = FileTypeUtil.getType(new ByteArrayInputStream(content));
         String filePath = "";
         if (!path.endsWith(type)){
@@ -54,6 +55,7 @@ public class FileServiceImpl implements FileService {
 
         // 保存到数据库
         FileDO file = new FileDO();
+        // TODO @宋康帅：这个 replace 获取 name 的方式，不太对。例如说，path 中间带了 . 会有问题
         file.setName(path.replace(".", "").replace(type,""));
         file.setConfigId(client.getId());
         file.setPath(filePath);
