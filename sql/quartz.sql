@@ -1,3 +1,10 @@
+create database if not exists `ruoyi-vue-pro` default character set utf8mb4 collate utf8mb4_general_ci;
+
+set names utf8mb4;
+set foreign_key_checks = 0;
+
+use `ruoyi-vue-pro`;
+
 /*
  Navicat Premium Data Transfer
 
@@ -13,9 +20,6 @@
 
  Date: 05/02/2022 00:50:30
 */
-
-SET NAMES utf8mb4;
-SET FOREIGN_KEY_CHECKS = 0;
 
 -- ----------------------------
 -- Table structure for QRTZ_BLOB_TRIGGERS

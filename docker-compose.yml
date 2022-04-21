@@ -1,0 +1,74 @@
+version: '3.5'
+services:
+  yudao-mysql:
+    build:
+      context: ./sql
+    image: yudao-mysql
+    restart: always
+    container_name: yudao-mysql
+    hostname: yudao-mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+    networks:
+      ruoyi-pro-net:
+        aliases:
+            - yudao-mysql
+
+  yudao-redis:
+    image: redis:5.0
+    restart: always
+    container_name: yudao-redis
+    hostname: yudao-redis
+    ports:
+      - "6379:6379"
+    networks:
+      ruoyi-pro-net:
+        aliases:
+            - yudao-redis
+
+  yudao-server:
+    build:
+      context: ./yudao-server/
+    image: yudao-server
+    restart: always
+    container_name: yudao-server
+    hostname: yudao-server
+    environment:
+      MYSQL_HOST: yudao-mysql
+      MYSQL_PORT: 3306
+      MYSQL_USER: root
+      MYSQL_PASSWORD: 123456
+      MYSQL_DATABASE: yudao
+      REDIS_HOST: yudao-redis
+      REDIS_PORT: 6379
+    ports:
+      - "48080:48080"
+    networks:
+      ruoyi-pro-net:
+        aliases:
+            - yudao-server
+    depends_on:
+      - yudao-mysql
+      - yudao-redis
+
+  yudao-admin:
+    build:
+      context: ./yudao-ui-admin/
+    restart: always
+    container_name: yudao-admin
+    hostname: yudao-admin
+    ports:
+      - "80:80"
+    networks:
+      ruoyi-pro-net:
+        aliases:
+            - yudao-admin
+    depends_on:
+      - yudao-server
+
+networks:
+  ruoyi-pro-net:
+    name: yudao
+    driver: bridge
