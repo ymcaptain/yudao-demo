@@ -19,6 +19,7 @@ import cn.iocoder.yudao.module.system.api.user.dto.AdminUserRespDTO;
 import com.google.common.annotations.VisibleForTesting;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.flowable.bpmn.model.MultiInstanceLoopCharacteristics;
 import org.flowable.bpmn.model.UserTask;
 import org.flowable.common.engine.api.FlowableException;
 import org.flowable.common.engine.impl.el.ExpressionManager;
@@ -76,13 +77,20 @@ public class BpmUserTaskActivityBehavior extends UserTaskActivityBehavior {
     @Override
     @DataPermission(enable = false) // 不需要处理数据权限， 不然会有问题，查询不到数据
     protected void handleAssignments(TaskService taskService, String assignee, String owner, List<String> candidateUsers, List<String> candidateGroups, TaskEntity task, ExpressionManager expressionManager, DelegateExecution execution, ProcessEngineConfigurationImpl processEngineConfiguration) {
-        // 第一步，获得任务的规则
-        BpmTaskAssignRuleDO rule = getTaskRule(task);
-        // 第二步，获得任务的候选用户们
-        Set<Long> candidateUserIds = calculateTaskCandidateUsers(task, rule);
-        // 第三步，设置一个作为负责人
-        Long assigneeUserId = chooseTaskAssignee(candidateUserIds);
-        TaskHelper.changeTaskAssignee(task, String.valueOf(assigneeUserId));
+
+        UserTask currentFlowElement = (UserTask) execution.getCurrentFlowElement();
+        MultiInstanceLoopCharacteristics loopCharacteristics = currentFlowElement.getLoopCharacteristics();
+        if (loopCharacteristics != null) {
+            String elementVariable = loopCharacteristics.getElementVariable();
+            Map<String, Object> variablesLocal = execution.getVariablesLocal();
+            Long assigneeUserId = (Long) variablesLocal.get(elementVariable);
+            TaskHelper.changeTaskAssignee(task, String.valueOf(assigneeUserId));
+        } else {
+            BpmTaskAssignRuleDO rule = getTaskRule(task);
+            Set<Long> candidateUserIds = calculateTaskCandidateUsers(task, rule);
+            Long assigneeUserId = chooseTaskAssignee(candidateUserIds);
+            TaskHelper.changeTaskAssignee(task, String.valueOf(assigneeUserId));
+        }
     }
 
     private BpmTaskAssignRuleDO getTaskRule(TaskEntity task) {

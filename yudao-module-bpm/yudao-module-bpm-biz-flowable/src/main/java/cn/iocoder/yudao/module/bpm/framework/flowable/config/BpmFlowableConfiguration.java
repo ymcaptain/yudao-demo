@@ -5,6 +5,7 @@ import cn.iocoder.yudao.module.bpm.framework.flowable.core.behavior.BpmActivityB
 import cn.iocoder.yudao.module.bpm.framework.flowable.core.behavior.script.BpmTaskAssignScript;
 import cn.iocoder.yudao.module.bpm.service.definition.BpmTaskAssignRuleService;
 import cn.iocoder.yudao.module.bpm.service.definition.BpmUserGroupService;
+import cn.iocoder.yudao.module.bpm.service.task.BpmTaskRuleServiceImpl;
 import cn.iocoder.yudao.module.system.api.dept.DeptApi;
 import cn.iocoder.yudao.module.system.api.permission.PermissionApi;
 import cn.iocoder.yudao.module.system.api.user.AdminUserApi;
@@ -44,19 +45,21 @@ public class BpmFlowableConfiguration {
     }
 
     @Bean
-    public BpmActivityBehaviorFactory bpmActivityBehaviorFactory(BpmTaskAssignRuleService taskRuleService,
+    public BpmActivityBehaviorFactory bpmActivityBehaviorFactory(BpmTaskRuleServiceImpl bpmTaskRuleService,
+                                                                 BpmTaskAssignRuleService taskRuleService,
                                                                  BpmUserGroupService userGroupService,
                                                                  PermissionApi permissionApi,
                                                                  DeptApi deptApi,
                                                                  AdminUserApi adminUserApi,
                                                                  List<BpmTaskAssignScript> scripts) {
         BpmActivityBehaviorFactory bpmActivityBehaviorFactory = new BpmActivityBehaviorFactory();
-        bpmActivityBehaviorFactory.setBpmTaskRuleService(taskRuleService);
+        bpmActivityBehaviorFactory.setBpmTaskAssignRuleService(taskRuleService);
         bpmActivityBehaviorFactory.setUserGroupService(userGroupService);
         bpmActivityBehaviorFactory.setAdminUserApi(adminUserApi);
         bpmActivityBehaviorFactory.setPermissionApi(permissionApi);
         bpmActivityBehaviorFactory.setDeptApi(deptApi);
         bpmActivityBehaviorFactory.setScripts(scripts);
+        bpmActivityBehaviorFactory.setBpmTaskRuleService(bpmTaskRuleService);
         return bpmActivityBehaviorFactory;
     }
 }
