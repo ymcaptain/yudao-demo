@@ -35,6 +35,8 @@ public class SecurityConfiguration {
                 registry.antMatchers(buildAdminApi("/system/tenant/get-id-by-name")).permitAll();
                 // 短信回调 API
                 registry.antMatchers(buildAdminApi("/system/sms/callback/**")).permitAll();
+                // 忘记密码 API
+                registry.antMatchers(buildAdminApi("/system/auth/reset-password")).permitAll();
             }
 
         };

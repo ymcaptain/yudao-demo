@@ -12,6 +12,7 @@ import cn.iocoder.yudao.module.system.controller.admin.auth.vo.auth.*;
 import cn.iocoder.yudao.module.system.convert.auth.AuthConvert;
 import cn.iocoder.yudao.module.system.dal.dataobject.auth.OAuth2AccessTokenDO;
 import cn.iocoder.yudao.module.system.dal.dataobject.user.AdminUserDO;
+import cn.iocoder.yudao.module.system.dal.mysql.user.AdminUserMapper;
 import cn.iocoder.yudao.module.system.enums.auth.OAuth2ClientConstants;
 import cn.iocoder.yudao.module.system.enums.logger.LoginLogTypeEnum;
 import cn.iocoder.yudao.module.system.enums.logger.LoginResultEnum;
@@ -23,6 +24,7 @@ import cn.iocoder.yudao.module.system.service.social.SocialUserService;
 import cn.iocoder.yudao.module.system.service.user.AdminUserService;
 import com.google.common.annotations.VisibleForTesting;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -54,12 +56,14 @@ public class AdminAuthServiceImpl implements AdminAuthService {
     private SocialUserService socialUserService;
     @Resource
     private MemberService memberService;
-
     @Resource
     private Validator validator;
-
     @Resource
     private SmsCodeApi smsCodeApi;
+    @Resource
+    private AdminUserMapper userMapper;
+    @Resource
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public AuthLoginRespVO login(AuthLoginReqVO reqVO) {
@@ -86,7 +90,8 @@ public class AdminAuthServiceImpl implements AdminAuthService {
     @Override
     public AuthLoginRespVO smsLogin(AuthSmsLoginReqVO reqVO) {
         // 校验验证码
-        smsCodeApi.useSmsCode(AuthConvert.INSTANCE.convert(reqVO, SmsSceneEnum.ADMIN_MEMBER_LOGIN.getScene(), getClientIP()));
+        smsCodeApi.useSmsCode(
+            AuthConvert.INSTANCE.convert(reqVO, SmsSceneEnum.ADMIN_MEMBER_LOGIN.getScene(), getClientIP()));
 
         // 获得用户信息
         AdminUserDO user = userService.getUserByMobile(reqVO.getMobile());
@@ -96,6 +101,19 @@ public class AdminAuthServiceImpl implements AdminAuthService {
 
         // 缓存登陆用户到 Redis 中，返回 sessionId 编号
         return createTokenAfterLoginSuccess(user.getId(), reqVO.getMobile(), LoginLogTypeEnum.LOGIN_MOBILE);
+    }
+
+    @Override
+    public void resetPassword(AuthResetPasswordReqVO reqVO) {
+        // 检验用户是否存在
+        AdminUserDO userDO = checkUserIfExists(reqVO.getMobile());
+
+        // 使用验证码
+        smsCodeApi.useSmsCode(AuthConvert.INSTANCE.convert(reqVO, SmsSceneEnum.WEB_MEMBER_FORGET_PASSWORD, getClientIP()));
+
+        // 更新密码
+        userMapper.updateById(
+            AdminUserDO.builder().id(userDO.getId()).password(passwordEncoder.encode(reqVO.getPassword())).build());
     }
 
     @VisibleForTesting
@@ -145,8 +163,8 @@ public class AdminAuthServiceImpl implements AdminAuthService {
         return user;
     }
 
-    private void createLoginLog(Long userId, String username,
-                                LoginLogTypeEnum logTypeEnum, LoginResultEnum loginResult) {
+    private void createLoginLog(Long userId, String username, LoginLogTypeEnum logTypeEnum,
+        LoginResultEnum loginResult) {
         // 插入登录日志
         LoginLogCreateReqDTO reqDTO = new LoginLogCreateReqDTO();
         reqDTO.setLogType(logTypeEnum.getType());
@@ -167,8 +185,8 @@ public class AdminAuthServiceImpl implements AdminAuthService {
     @Override
     public AuthLoginRespVO socialQuickLogin(AuthSocialQuickLoginReqVO reqVO) {
         // 使用 code 授权码，进行登录。然后，获得到绑定的用户编号
-        Long userId = socialUserService.getBindUserId(UserTypeEnum.ADMIN.getValue(), reqVO.getType(),
-                reqVO.getCode(), reqVO.getState());
+        Long userId = socialUserService.getBindUserId(UserTypeEnum.ADMIN.getValue(), reqVO.getType(), reqVO.getCode(),
+            reqVO.getState());
         if (userId == null) {
             throw exception(AUTH_THIRD_LOGIN_NOT_BIND);
         }
@@ -197,7 +215,8 @@ public class AdminAuthServiceImpl implements AdminAuthService {
 
     @Override
     public AuthLoginRespVO refreshToken(String refreshToken) {
-        OAuth2AccessTokenDO accessTokenDO = oauth2TokenService.refreshAccessToken(refreshToken, OAuth2ClientConstants.CLIENT_ID_DEFAULT);
+        OAuth2AccessTokenDO accessTokenDO =
+            oauth2TokenService.refreshAccessToken(refreshToken, OAuth2ClientConstants.CLIENT_ID_DEFAULT);
         return AuthConvert.INSTANCE.convert(accessTokenDO);
     }
 
@@ -206,7 +225,7 @@ public class AdminAuthServiceImpl implements AdminAuthService {
         createLoginLog(userId, username, logType, LoginResultEnum.SUCCESS);
         // 创建访问令牌
         OAuth2AccessTokenDO accessTokenDO = oauth2TokenService.createAccessToken(userId, getUserType().getValue(),
-                OAuth2ClientConstants.CLIENT_ID_DEFAULT);
+            OAuth2ClientConstants.CLIENT_ID_DEFAULT);
         // 构建返回结果
         return AuthConvert.INSTANCE.convert(accessTokenDO);
     }
@@ -249,6 +268,14 @@ public class AdminAuthServiceImpl implements AdminAuthService {
 
     private UserTypeEnum getUserType() {
         return UserTypeEnum.ADMIN;
+    }
+
+    private AdminUserDO checkUserIfExists(String mobile) {
+        AdminUserDO user = userMapper.selectByMobile(mobile);
+        if (user == null) {
+            throw exception(USER_NOT_EXISTS);
+        }
+        return user;
     }
 
 }

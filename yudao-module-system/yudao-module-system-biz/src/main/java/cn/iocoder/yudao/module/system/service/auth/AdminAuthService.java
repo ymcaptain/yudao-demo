@@ -17,6 +17,7 @@ public interface AdminAuthService {
      * 账号登录
      *
      * @param reqVO 登录信息
+     *
      * @return 登录结果
      */
     AuthLoginRespVO login(@Valid AuthLoginReqVO reqVO);
@@ -24,7 +25,7 @@ public interface AdminAuthService {
     /**
      * 基于 token 退出登录
      *
-     * @param token token
+     * @param token   token
      * @param logType 登出类型
      */
     void logout(String token, Integer logType);
@@ -40,14 +41,23 @@ public interface AdminAuthService {
      * 短信登录
      *
      * @param reqVO 登录信息
+     *
      * @return 登录结果
      */
-    AuthLoginRespVO smsLogin(AuthSmsLoginReqVO reqVO) ;
+    AuthLoginRespVO smsLogin(AuthSmsLoginReqVO reqVO);
+
+    /**
+     * 忘记密码
+     *
+     * @param userReqVO 用户请求实体类
+     */
+    void resetPassword(AuthResetPasswordReqVO userReqVO);
 
     /**
      * 社交快捷登录，使用 code 授权码
      *
      * @param reqVO 登录信息
+     *
      * @return 登录结果
      */
     AuthLoginRespVO socialQuickLogin(@Valid AuthSocialQuickLoginReqVO reqVO);
@@ -56,6 +66,7 @@ public interface AdminAuthService {
      * 社交绑定登录，使用 code 授权码 + 账号密码
      *
      * @param reqVO 登录信息
+     *
      * @return 登录结果
      */
     AuthLoginRespVO socialBindLogin(@Valid AuthSocialBindLoginReqVO reqVO);
@@ -64,6 +75,7 @@ public interface AdminAuthService {
      * 刷新访问令牌
      *
      * @param refreshToken 刷新令牌
+     *
      * @return 登录结果
      */
     AuthLoginRespVO refreshToken(String refreshToken);

@@ -133,6 +133,14 @@ public class AuthController {
         return success(true);
     }
 
+    @PostMapping("/reset-password")
+    @ApiOperation(value = "重置密码", notes = "用户忘记密码时使用")
+    @OperateLog(enable = false) // 避免 Post 请求被记录操作日志
+    public CommonResult<Boolean> resetPassword(@RequestBody @Valid AuthResetPasswordReqVO reqVO) {
+        authService.resetPassword(reqVO);
+        return success(true);
+    }
+
     // ========== 社交登录相关 ==========
 
     @GetMapping("/social-auth-redirect")
@@ -159,5 +167,4 @@ public class AuthController {
     public CommonResult<AuthLoginRespVO> socialBindLogin(@RequestBody @Valid AuthSocialBindLoginReqVO reqVO) {
         return success(authService.socialBindLogin(reqVO));
     }
-
 }
