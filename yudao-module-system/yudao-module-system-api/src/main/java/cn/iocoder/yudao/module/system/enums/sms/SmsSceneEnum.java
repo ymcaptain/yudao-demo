@@ -19,8 +19,10 @@ public enum SmsSceneEnum implements IntArrayValuable {
     MEMBER_LOGIN(1, "user-sms-login", "会员用户 - 手机号登陆"),
     MEMBER_UPDATE_MOBILE(2, "user-sms-reset-password", "会员用户 - 修改手机"),
     MEMBER_FORGET_PASSWORD(3, "user-sms-update-mobile", "会员用户 - 忘记密码"),
+
+    // TODO @ke：这个是管理后台哈，改成 ADMIN_RESET_PASSWORD 更合适，场景改成 22。短信模板有新建一下哇？
     WEB_MEMBER_FORGET_PASSWORD(3, "web-user-sms-update-mobile", "网页端-会员用户 - 忘记密码"),
-    ADMIN_MEMBER_LOGIN(21, "admin-sms-login", "后台用户 - 手机号登录");
+    ADMIN_SMS_LOGIN(21, "admin-sms-login", "后台用户 - 手机号登录");
 
     public static final int[] ARRAYS = Arrays.stream(values()).mapToInt(SmsSceneEnum::getScene).toArray();
 

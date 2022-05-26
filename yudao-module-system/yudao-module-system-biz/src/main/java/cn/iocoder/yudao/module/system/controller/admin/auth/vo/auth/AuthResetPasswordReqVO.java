@@ -11,6 +11,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 
+// TODO @ke：使用 swagger 注解
 /**
  * @author kemengkai
  * @create 2022-05-19 09:09
@@ -19,6 +20,7 @@ import javax.validation.constraints.Pattern;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AuthResetPasswordReqVO {
+
     @ApiModelProperty(value = "新密码", required = true, example = "buzhidao")
     @NotEmpty(message = "新密码不能为空")
     @Length(min = 4, max = 16, message = "密码长度为 4-16 位")
