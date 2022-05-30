@@ -17,7 +17,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum PayChannelEnum {
 
-    WX_JSAPI("wx_jsapi", "微信JSAPI 支付(适用于 公众号 网页)", WXPayClientConfig.class),// WX_JSAPI 调起js支付前端支付调用文档（无后台接口交互）：  https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_4.shtml
+    WX_JSAPI("wx_jsapi", "微信 JSAPI 支付(适用于 公众号)", WXPayClientConfig.class),// WX_JSAPI 调起js支付前端支付调用文档（无后台接口交互）：  https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_4.shtml
+    WX_H5("wx_h5", "微信 H5 支付", WXPayClientConfig.class),// WX_H5 调起H5支付前端支付调用文档（无后台接口交互）： https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_3_4.shtml
 
     WX_APP("wx_app", "微信 App 支付", WXPayClientConfig.class),// WX_APP调起支付前端支付调用文档（无后台接口交互）：  https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_2_4.shtml
     WX_NATIVE("wx_native", "微信 native 支付", WXPayClientConfig.class),
