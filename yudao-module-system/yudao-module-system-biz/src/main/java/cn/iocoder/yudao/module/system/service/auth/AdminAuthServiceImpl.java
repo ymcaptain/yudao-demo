@@ -62,8 +62,6 @@ public class AdminAuthServiceImpl implements AdminAuthService {
     private SmsCodeApi smsCodeApi;
     @Resource
     private AdminUserMapper userMapper;
-    @Resource
-    private PasswordEncoder passwordEncoder;
 
     @Override
     public AuthLoginRespVO login(AuthLoginReqVO reqVO) {
@@ -109,12 +107,11 @@ public class AdminAuthServiceImpl implements AdminAuthService {
         AdminUserDO userDO = checkUserIfExists(reqVO.getMobile());
 
         // 使用验证码
-        smsCodeApi.useSmsCode(AuthConvert.INSTANCE.convert(reqVO, SmsSceneEnum.WEB_MEMBER_FORGET_PASSWORD, getClientIP()));
+        smsCodeApi.useSmsCode(AuthConvert.INSTANCE.convert(reqVO, SmsSceneEnum.ADMIN_RESET_PASSWORD, getClientIP()));
 
         // 更新密码
         // TODO ke：AdminUserService 那提供一个 updatePassword 的密码，跨模块，不直接操作对方的 db；会员那也一起改下哈；相关的单测要写下噢
-        userMapper.updateById(
-            AdminUserDO.builder().id(userDO.getId()).password(passwordEncoder.encode(reqVO.getPassword())).build());
+        userService.updateUserPassword(userDO.getId(), reqVO.getPassword());
     }
 
     @VisibleForTesting

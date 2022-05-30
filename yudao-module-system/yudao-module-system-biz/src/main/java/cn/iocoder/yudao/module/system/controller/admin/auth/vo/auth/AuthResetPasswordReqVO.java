@@ -1,8 +1,10 @@
 package cn.iocoder.yudao.module.system.controller.admin.auth.vo.auth;
 
 import cn.iocoder.yudao.framework.common.validation.Mobile;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
@@ -16,9 +18,11 @@ import javax.validation.constraints.Pattern;
  * @author kemengkai
  * @create 2022-05-19 09:09
  */
+@ApiModel(value = "管理后台 - 修改密码 Response VO", description = "修改后台管理的账户密码")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class AuthResetPasswordReqVO {
 
     @ApiModelProperty(value = "新密码", required = true, example = "buzhidao")

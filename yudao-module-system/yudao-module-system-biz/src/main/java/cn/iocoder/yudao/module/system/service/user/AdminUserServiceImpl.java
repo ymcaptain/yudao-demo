@@ -172,7 +172,8 @@ public class AdminUserServiceImpl implements AdminUserService {
         // 更新密码
         AdminUserDO updateObj = new AdminUserDO();
         updateObj.setId(id);
-        updateObj.setPassword(encodePassword(password)); // 加密密码
+        // 加密密码
+        updateObj.setPassword(encodePassword(password));
         userMapper.updateById(updateObj);
     }
 

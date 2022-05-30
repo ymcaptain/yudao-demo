@@ -78,4 +78,12 @@ public interface MemberUserService {
      */
     boolean isPasswordMatch(String rawPassword, String encodedPassword);
 
+    /**
+     * 修改密码
+     *
+     * @param id       用户编号
+     * @param password 密码
+     */
+    void updateUserPassword(Long id, String password);
+
 }

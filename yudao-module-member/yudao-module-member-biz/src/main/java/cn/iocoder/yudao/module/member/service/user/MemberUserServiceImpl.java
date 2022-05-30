@@ -132,6 +132,18 @@ public class MemberUserServiceImpl implements MemberUserService {
         return passwordEncoder.matches(rawPassword, encodedPassword);
     }
 
+    @Override
+    public void updateUserPassword(Long id, String password) {
+        // 校验用户存在
+        checkUserExists(id);
+        // 更新密码
+        MemberUserDO updateObj = new MemberUserDO();
+        updateObj.setId(id);
+        // 加密密码
+        updateObj.setPassword(encodePassword(password));
+        memberUserMapper.updateById(updateObj);
+    }
+
     /**
      * 对密码进行加密
      *

@@ -200,8 +200,7 @@ public class MemberAuthServiceImpl implements MemberAuthService {
                 getClientIP()));
 
         // 更新密码
-        userMapper.updateById(MemberUserDO.builder().id(userDO.getId())
-                .password(passwordEncoder.encode(reqVO.getPassword())).build());
+        userService.updateUserPassword(userDO.getId(), reqVO.getPassword());
     }
 
     @Override
