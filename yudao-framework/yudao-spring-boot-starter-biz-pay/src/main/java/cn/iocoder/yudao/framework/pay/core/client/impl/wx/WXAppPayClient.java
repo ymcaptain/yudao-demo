@@ -31,26 +31,25 @@ import static cn.iocoder.yudao.framework.common.util.json.JsonUtils.toJsonString
 import static cn.iocoder.yudao.framework.pay.core.client.impl.wx.WXCodeMapping.CODE_SUCCESS;
 import static cn.iocoder.yudao.framework.pay.core.client.impl.wx.WXCodeMapping.MESSAGE_SUCCESS;
 
-
 /**
- * 微信小程序下支付
+ * 微信支付（app小程序）的 PayClient 实现类
  *
  * @author zwy
  */
 @Slf4j
-public class WXLitePayClient extends AbstractPayClient<WXPayClientConfig> {
+public class WXAppPayClient extends AbstractPayClient<WXPayClientConfig> {
 
     private WxPayService client;
 
-    public WXLitePayClient(Long channelId, WXPayClientConfig config) {
-        super(channelId, PayChannelEnum.WX_LITE.getCode(), config, new WXCodeMapping());
+    public WXAppPayClient(Long channelId, WXPayClientConfig config) {
+        super(channelId, PayChannelEnum.WX_APP.getCode(), config, new WXCodeMapping());
     }
 
     @Override
     protected void doInit() {
         WxPayConfig payConfig = new WxPayConfig();
         BeanUtil.copyProperties(config, payConfig, "keyContent");
-        payConfig.setTradeType(WxPayConstants.TradeType.JSAPI); // 设置使用 JS API 支付方式
+        payConfig.setTradeType(WxPayConstants.TradeType.APP); // 设置使用 APP 支付方式
 //        if (StrUtil.isNotEmpty(config.getKeyContent())) {
 //            payConfig.setKeyContent(config.getKeyContent().getBytes(StandardCharsets.UTF_8));
 //        }
@@ -87,10 +86,11 @@ public class WXLitePayClient extends AbstractPayClient<WXPayClientConfig> {
         } catch (WxPayException e) {
             log.error("[unifiedOrder][request({}) 发起支付失败，原因({})]", toJsonString(reqDTO), e);
             return PayCommonResult.build(ObjectUtils.defaultIfNull(e.getErrCode(), e.getReturnCode(), "CustomErrorCode"),
-                    ObjectUtils.defaultIfNull(e.getErrCodeDes(), e.getCustomErrorMsg()), null, codeMapping);
+                    ObjectUtils.defaultIfNull(e.getErrCodeDes(), e.getCustomErrorMsg()),null, codeMapping);
         }
         return PayCommonResult.build(CODE_SUCCESS, MESSAGE_SUCCESS, response, codeMapping);
     }
+
 
     private WxPayMpOrderResult unifiedOrderV2(PayOrderUnifiedReqDTO reqDTO) throws WxPayException {
         // 构建 WxPayUnifiedOrderRequest 对象
@@ -98,7 +98,7 @@ public class WXLitePayClient extends AbstractPayClient<WXPayClientConfig> {
                 .outTradeNo(reqDTO.getMerchantOrderId())
                 .body(reqDTO.getBody())
                 .totalFee(reqDTO.getAmount().intValue()) // 单位分
-                .timeExpire(DateUtil.format(reqDTO.getExpireTime(), "yyyyMMddHHmmss")) // v2的时间格式
+                .timeExpire(DateUtil.format(reqDTO.getExpireTime(), "yyyy-MM-dd'T'HH:mm:ssXXX"))
                 .spbillCreateIp(reqDTO.getUserIp())
                 .openid(getOpenid(reqDTO))
                 .notifyUrl(reqDTO.getNotifyUrl())
@@ -111,19 +111,14 @@ public class WXLitePayClient extends AbstractPayClient<WXPayClientConfig> {
         // 构建 WxPayUnifiedOrderRequest 对象
         WxPayUnifiedOrderV3Request request = new WxPayUnifiedOrderV3Request();
         request.setOutTradeNo(reqDTO.getMerchantOrderId());
-
         request.setDescription(reqDTO.getBody());
-        request.setAmount(new WxPayUnifiedOrderV3Request
-                .Amount()
-                .setTotal(reqDTO
-                        .getAmount()
-                        .intValue())); // 单位分
-        request.setTimeExpire(DateUtil.format(reqDTO.getExpireTime(), "yyyy-MM-dd'T'HH:mm:ssXXX")); // v3的时间格式
+        request.setAmount(new WxPayUnifiedOrderV3Request.Amount().setTotal(reqDTO.getAmount().intValue())); // 单位分
+        request.setTimeExpire(DateUtil.format(reqDTO.getExpireTime(), "yyyy-MM-dd'T'HH:mm:ssXXX"));
         request.setPayer(new WxPayUnifiedOrderV3Request.Payer().setOpenid(getOpenid(reqDTO)));
         request.setSceneInfo(new WxPayUnifiedOrderV3Request.SceneInfo().setPayerClientIp(reqDTO.getUserIp()));
         request.setNotifyUrl(reqDTO.getNotifyUrl());
         // 执行请求
-        return client.createOrderV3(TradeTypeEnum.JSAPI, request);
+        return client.createOrderV3(TradeTypeEnum.APP, request);
     }
 
     private static String getOpenid(PayOrderUnifiedReqDTO reqDTO) {
@@ -136,7 +131,7 @@ public class WXLitePayClient extends AbstractPayClient<WXPayClientConfig> {
 
     /**
      *
-     * 微信支付回调 分 v2 和v3 的处理方式
+     * 微信支付回调 分v2 和v3 的处理方式
      *
      * @param data 通知结果
      * @return 支付回调对象
@@ -144,7 +139,7 @@ public class WXLitePayClient extends AbstractPayClient<WXPayClientConfig> {
      */
     @Override
     public PayOrderNotifyRespDTO parseOrderNotify(PayNotifyDataDTO data) throws WxPayException {
-        log.info("[parseOrderNotify][微信支付回调data数据:{}]", data.getBody());
+        log.info("[parseOrderNotify][微信支付回调data数据: {}]", data.getBody());
         // 微信支付 v2 回调结果处理
         switch (config.getApiVersion()) {
             case WXPayClientConfig.API_VERSION_V2:
@@ -162,7 +157,6 @@ public class WXLitePayClient extends AbstractPayClient<WXPayClientConfig> {
         // 转换结果
         Assert.isTrue(Objects.equals(wxPayOrderNotifyV3Result.getResult().getTradeState(), "SUCCESS"),
                 "支付结果非 SUCCESS");
-
         return PayOrderNotifyRespDTO
                 .builder()
                 .orderExtensionNo(result.getOutTradeNo())
@@ -189,14 +183,13 @@ public class WXLitePayClient extends AbstractPayClient<WXPayClientConfig> {
 
     @Override
     public PayRefundNotifyDTO parseRefundNotify(PayNotifyDataDTO notifyData) {
-        //TODO 需要实现
+        // TODO 需要实现
         throw new UnsupportedOperationException("需要实现");
     }
 
-
     @Override
     protected PayCommonResult<PayRefundUnifiedRespDTO> doUnifiedRefund(PayRefundUnifiedReqDTO reqDTO) throws Throwable {
-        //TODO 需要实现
+        // TODO 需要实现
         throw new UnsupportedOperationException();
     }
 
