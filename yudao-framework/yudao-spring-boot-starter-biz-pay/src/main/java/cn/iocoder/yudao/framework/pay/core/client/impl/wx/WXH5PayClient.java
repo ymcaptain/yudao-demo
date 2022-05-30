@@ -33,7 +33,7 @@ import static cn.iocoder.yudao.framework.pay.core.client.impl.wx.WXCodeMapping.C
 import static cn.iocoder.yudao.framework.pay.core.client.impl.wx.WXCodeMapping.MESSAGE_SUCCESS;
 
 /**
- * @Description: todo 微信 H5 支付
+ * @Description:
  * @author: zwy
  * @date: 2022年05月30日 11:45
  */
