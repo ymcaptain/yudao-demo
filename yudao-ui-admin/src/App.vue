@@ -17,3 +17,6 @@ export default  {
   }
 }
 </script>
+<style lang="scss">
+@import "~@/assets/styles/yudao-plus.scss";
+</style>

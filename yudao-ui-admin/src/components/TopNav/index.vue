@@ -87,7 +87,7 @@ export default {
     // 默认激活的菜单
     activeMenu() {
       const path = this.$route.path;
-      let activePath = path;
+       let activePath = this.defaultRouter();
       if (path.lastIndexOf("/") > 0) {
         const tmpPath = path.substring(1, path.length);
         activePath = "/" + tmpPath.substring(0, tmpPath.indexOf("/"));
@@ -98,7 +98,7 @@ export default {
         } else {
           activePath = "index";
         }
-        this.$store.dispatch('app/toggleSideBarHide', true);
+       // this.$store.dispatch('app/toggleSideBarHide', true);
       } else if(!this.$route.children) {
         activePath = path;
         this.$store.dispatch('app/toggleSideBarHide', true);
@@ -138,6 +138,18 @@ export default {
         this.activeRoutes(key);
         this.$store.dispatch('app/toggleSideBarHide', false);
       }
+    },
+     // 默认激活的路由
+    defaultRouter() {
+      let router;
+            
+      Object.keys(this.routers).some((key) => {
+        if (!this.routers[key].hidden) {
+          router = this.routers[key].path;
+          return true;
+        }
+      });
+      return router;
     },
     // 当前激活的路由
     activeRoutes(key) {
