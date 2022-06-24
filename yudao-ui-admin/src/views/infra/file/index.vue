@@ -26,8 +26,9 @@
 
     <!-- 列表 -->
     <el-table v-loading="loading" :data="list">
-      <el-table-column label="文件名" align="center" prop="path" />
-      <el-table-column label="URL" align="center" prop="url" />
+      <el-table-column label="文件名" align="center" prop="name" />
+      <el-table-column label="文件路径" align="center" prop="path" />
+      <el-table-column label="文件 URL" align="center" prop="url" />
       <el-table-column label="文件大小" align="center" prop="size" width="120" :formatter="sizeFormat" />
       <el-table-column label="文件类型" align="center" prop="type" width="80" />
 <!--      <el-table-column label="文件内容" align="center" prop="content">-->
@@ -77,7 +78,7 @@
 
 <script>
 import { deleteFile, getFilePage } from "@/api/infra/file";
-import {getToken} from "@/utils/auth";
+import {getAccessToken} from "@/utils/auth";
 
 export default {
   name: "File",
@@ -108,7 +109,7 @@ export default {
         title: "", // 弹出层标题
         isUploading: false, // 是否禁用上传
         url: process.env.VUE_APP_BASE_API + "/admin-api/infra/file/upload", // 请求地址
-        headers: { Authorization: "Bearer " + getToken() }, // 设置上传的请求头部
+        headers: { Authorization: "Bearer " + getAccessToken() }, // 设置上传的请求头部
         data: {} // 上传的额外数据，用于文件名
       },
     };
@@ -160,7 +161,7 @@ export default {
     },
     /** 处理上传的文件发生变化 */
     handleFileChange(file, fileList) {
-      this.upload.data.path = file.name;
+
     },
     /** 处理文件上传中 */
     handleFileUploadProgress(event, file, fileList) {
