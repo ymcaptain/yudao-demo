@@ -1,12 +1,25 @@
 package cn.iocoder.yudao.module.bpm.service.task;
 
+import static cn.iocoder.yudao.framework.common.exception.util.ServiceExceptionUtil.exception;
+import static cn.iocoder.yudao.framework.common.util.collection.CollectionUtils.convertList;
+import static cn.iocoder.yudao.module.bpm.enums.ErrorCodeConstants.PROCESS_DEFINITION_IS_SUSPENDED;
+import static cn.iocoder.yudao.module.bpm.enums.ErrorCodeConstants.PROCESS_DEFINITION_NOT_EXISTS;
+import static cn.iocoder.yudao.module.bpm.enums.ErrorCodeConstants.PROCESS_INSTANCE_CANCEL_FAIL_NOT_EXISTS;
+import static cn.iocoder.yudao.module.bpm.enums.ErrorCodeConstants.PROCESS_INSTANCE_CANCEL_FAIL_NOT_SELF;
+
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.Assert;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.framework.common.util.number.NumberUtils;
 import cn.iocoder.yudao.module.bpm.api.task.dto.BpmProcessInstanceCreateReqDTO;
-import cn.iocoder.yudao.module.bpm.controller.admin.task.vo.instance.*;
+import cn.iocoder.yudao.module.bpm.cmd.AddSequenceMultiInstanceCmd;
+import cn.iocoder.yudao.module.bpm.controller.admin.task.vo.instance.BpmProcessInstanceCancelReqVO;
+import cn.iocoder.yudao.module.bpm.controller.admin.task.vo.instance.BpmProcessInstanceCreateReqVO;
+import cn.iocoder.yudao.module.bpm.controller.admin.task.vo.instance.BpmProcessInstanceMyPageReqVO;
+import cn.iocoder.yudao.module.bpm.controller.admin.task.vo.instance.BpmProcessInstancePageItemRespVO;
+import cn.iocoder.yudao.module.bpm.controller.admin.task.vo.instance.BpmProcessInstanceRespVO;
 import cn.iocoder.yudao.module.bpm.convert.task.BpmProcessInstanceConvert;
 import cn.iocoder.yudao.module.bpm.dal.dataobject.definition.BpmProcessDefinitionExtDO;
 import cn.iocoder.yudao.module.bpm.dal.dataobject.task.BpmProcessInstanceExtDO;
@@ -17,31 +30,44 @@ import cn.iocoder.yudao.module.bpm.enums.task.BpmProcessInstanceStatusEnum;
 import cn.iocoder.yudao.module.bpm.framework.bpm.core.event.BpmProcessInstanceResultEventPublisher;
 import cn.iocoder.yudao.module.bpm.service.definition.BpmProcessDefinitionService;
 import cn.iocoder.yudao.module.bpm.service.message.BpmMessageService;
+import cn.iocoder.yudao.module.bpm.vo.TaskTypeVo;
 import cn.iocoder.yudao.module.system.api.dept.DeptApi;
 import cn.iocoder.yudao.module.system.api.dept.dto.DeptRespDTO;
 import cn.iocoder.yudao.module.system.api.user.AdminUserApi;
 import cn.iocoder.yudao.module.system.api.user.dto.AdminUserRespDTO;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.RejectedExecutionException;
+import javax.annotation.Resource;
+import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.flowable.bpmn.model.BpmnModel;
+import org.flowable.bpmn.model.FlowNode;
+import org.flowable.common.engine.api.delegate.Expression;
 import org.flowable.engine.HistoryService;
+import org.flowable.engine.ManagementService;
+import org.flowable.engine.RepositoryService;
 import org.flowable.engine.RuntimeService;
+import org.flowable.engine.TaskService;
 import org.flowable.engine.delegate.event.FlowableCancelledEvent;
 import org.flowable.engine.history.HistoricProcessInstance;
+import org.flowable.engine.impl.bpmn.behavior.ParallelMultiInstanceBehavior;
+import org.flowable.engine.impl.bpmn.behavior.SequentialMultiInstanceBehavior;
 import org.flowable.engine.repository.ProcessDefinition;
 import org.flowable.engine.runtime.ProcessInstance;
 import org.flowable.task.api.Task;
+import org.flowable.task.service.impl.persistence.entity.TaskEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.core.task.TaskRejectedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
-
-import javax.annotation.Resource;
-import javax.validation.Valid;
-import java.util.*;
-
-import static cn.iocoder.yudao.framework.common.exception.util.ServiceExceptionUtil.exception;
-import static cn.iocoder.yudao.framework.common.util.collection.CollectionUtils.convertList;
-import static cn.iocoder.yudao.module.bpm.enums.ErrorCodeConstants.*;
-import static cn.iocoder.yudao.module.bpm.enums.ErrorCodeConstants.PROCESS_INSTANCE_CANCEL_FAIL_NOT_SELF;
 
 /**
  * 流程实例 Service 实现类
@@ -67,6 +93,13 @@ public class BpmProcessInstanceServiceImpl implements BpmProcessInstanceService 
     @Resource
     @Lazy // 解决循环依赖
     private BpmTaskService taskService;
+    @Resource
+    private TaskService engineTaskService;
+    @Autowired
+    private RepositoryService repositoryService;
+    @Autowired
+    private ManagementService managementService;
+
     @Resource
     private BpmProcessDefinitionService processDefinitionService;
     @Resource
@@ -250,11 +283,12 @@ public class BpmProcessInstanceServiceImpl implements BpmProcessInstanceService 
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void updateProcessInstanceExtReject(String id, String reason) {
+    @Override
+    public void updateProcessInstanceExtReject(String id, String comment) {
         // 需要主动查询，因为 instance 只有 id 属性
         ProcessInstance processInstance = getProcessInstance(id);
         // 删除流程实例，以实现驳回任务时，取消整个审批流程
-        deleteProcessInstance(id, StrUtil.format(BpmProcessInstanceDeleteReasonEnum.REJECT_TASK.format(reason)));
+        deleteProcessInstance(id, StrUtil.format(BpmProcessInstanceDeleteReasonEnum.REJECT_TASK.format(comment)));
 
         // 更新 status + result
         // 注意，不能和上面的逻辑更换位置。因为 deleteProcessInstance 会触发流程的取消，进而调用 updateProcessInstanceExtCancel 方法，
@@ -265,11 +299,40 @@ public class BpmProcessInstanceServiceImpl implements BpmProcessInstanceService 
         processInstanceExtMapper.updateByProcessInstanceId(instanceExtDO);
 
         // 发送流程被不通过的消息
-        messageService.sendMessageWhenProcessInstanceReject(BpmProcessInstanceConvert.INSTANCE.convert2RejectReq(processInstance, reason));
+        messageService.sendMessageWhenProcessInstanceReject(BpmProcessInstanceConvert.INSTANCE.convert2RejectReq(processInstance, comment));
 
         // 发送流程实例的状态事件
         processInstanceResultEventPublisher.sendProcessInstanceResultEvent(
                 BpmProcessInstanceConvert.INSTANCE.convert(this, processInstance, instanceExtDO.getResult()));
+    }
+
+    @Override
+    public void addTask(String taskId, String executionId, String currentTaskAssignee,
+        String taskDefinitionKey, String processInstanceId, String processDefinitionId, List<Long> assignees) {
+
+
+        TaskTypeVo taskTypeVo = isMultiInstance(processDefinitionId, taskDefinitionKey);
+        if(ObjectUtil.isEmpty(taskTypeVo)){
+            throw new TaskRejectedException("不支持加签：非多实例任务节点");
+        }
+
+        try {
+            if(taskTypeVo.getType() instanceof ParallelMultiInstanceBehavior){
+                for (Long assignee : assignees) {
+                    runtimeService.addMultiInstanceExecution(taskDefinitionKey, processInstanceId, Collections.singletonMap(taskTypeVo.getAssignee(), assignee));
+                }
+            }else if(taskTypeVo.getType() instanceof SequentialMultiInstanceBehavior){
+                AddSequenceMultiInstanceCmd addSequenceMultiInstanceCmd =
+                    new AddSequenceMultiInstanceCmd(executionId,taskTypeVo.getAssigneeList(),assignees);
+                managementService.executeCommand(addSequenceMultiInstanceCmd);
+            }
+
+            engineTaskService.addComment(taskId,processInstanceId,currentTaskAssignee + "加签【"+ StringUtils.join(assignees, ",")+"】");
+        }catch (Exception e){
+            log.error("加签失败", e);
+            throw new RejectedExecutionException("加签失败");
+        }
+
     }
 
     private void deleteProcessInstance(String id, String reason) {
@@ -297,4 +360,80 @@ public class BpmProcessInstanceServiceImpl implements BpmProcessInstanceService 
 
         return instance.getId();
     }
+
+
+
+    private TaskEntity createNewTask(Task currentTask, Date createTime){
+        TaskEntity task = null;
+        if(ObjectUtil.isNotEmpty(currentTask)){
+            task = (TaskEntity) engineTaskService.newTask();
+            task.setCategory(currentTask.getCategory());
+            task.setDescription(currentTask.getDescription());
+            task.setTenantId(currentTask.getTenantId());
+            task.setAssignee(currentTask.getAssignee());
+            task.setName(currentTask.getName());
+            task.setProcessDefinitionId(currentTask.getProcessDefinitionId());
+            task.setProcessInstanceId(currentTask.getProcessInstanceId());
+            task.setTaskDefinitionKey(currentTask.getTaskDefinitionKey());
+            task.setPriority(currentTask.getPriority());
+            task.setCreateTime(createTime);
+            engineTaskService.saveTask(task);
+        }
+        // 应考虑将这块也
+//        if(ObjectUtil.isNotNull(task)){
+//            ActHiTaskInst hiTaskInst = iActHiTaskInstService.getById(task.getId());
+//            if(ObjectUtil.isNotEmpty(hiTaskInst)){
+//                hiTaskInst.setProcDefId(task.getProcessDefinitionId());
+//                hiTaskInst.setProcInstId(task.getProcessInstanceId());
+//                hiTaskInst.setTaskDefKey(task.getTaskDefinitionKey());
+//                hiTaskInst.setStartTime(createTime);
+//                iActHiTaskInstService.updateById(hiTaskInst);
+//            }
+//        }
+        return  task;
+    }
+
+    private TaskTypeVo isMultiInstance(String processDefinitionId, String taskDefinitionKey) {
+        BpmnModel bpmnModel = repositoryService.getBpmnModel(processDefinitionId);
+        FlowNode flowNode = (FlowNode)bpmnModel.getFlowElement(taskDefinitionKey);
+        TaskTypeVo multiVo = new TaskTypeVo();
+        //判断是否为并行会签节点
+        if(flowNode.getBehavior()  instanceof ParallelMultiInstanceBehavior){
+            ParallelMultiInstanceBehavior behavior = (ParallelMultiInstanceBehavior) flowNode.getBehavior();
+            if (behavior != null && behavior.getCollectionExpression() != null) {
+                Expression collectionExpression = behavior.getCollectionExpression();
+                String assigneeList = collectionExpression.getExpressionText();
+                String assignee = behavior.getCollectionElementVariable();
+                multiVo.setType(behavior);
+                multiVo.setAssignee(assignee);
+                multiVo.setAssigneeList(assigneeList);
+                return multiVo;
+            }
+            //判断是否为串行会签节点
+        }else if(flowNode.getBehavior()  instanceof SequentialMultiInstanceBehavior){
+            SequentialMultiInstanceBehavior behavior = (SequentialMultiInstanceBehavior) flowNode.getBehavior();
+            if (behavior != null && behavior.getCollectionExpression() != null) {
+                Expression collectionExpression = behavior.getCollectionExpression();
+                String assigneeList = collectionExpression.getExpressionText();
+                String assignee = behavior.getCollectionElementVariable();
+                multiVo.setType(behavior);
+                multiVo.setAssignee(assignee);
+                multiVo.setAssigneeList(assigneeList);
+                return multiVo;
+            }
+//        }else if(flowNode.getBehavior()  instanceof BpmUserTaskActivityBehavior){
+//            BpmUserTaskActivityBehavior behavior = (BpmUserTaskActivityBehavior) flowNode.getBehavior();
+//            if (behavior != null && behavior.getMultiInstanceActivityBehavior() != null) {
+//                Expression collectionExpression = behavior.getMultiInstanceActivityBehavior().getCollectionExpression();
+//                String assigneeList = collectionExpression.getExpressionText();
+//                String assignee = behavior.getMultiInstanceActivityBehavior().getCollectionElementVariable();
+//                multiVo.setType(behavior);
+//                multiVo.setAssignee(assignee);
+//                multiVo.setAssigneeList(assigneeList);
+//                return multiVo;
+//            }
+        }
+        return null;
+    }
+
 }

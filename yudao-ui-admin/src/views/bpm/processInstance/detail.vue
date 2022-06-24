@@ -14,8 +14,11 @@
             {{ processInstance.startUser.nickname }}
             <el-tag type="info" size="mini">{{ processInstance.startUser.deptName }}</el-tag>
           </el-form-item>
-          <el-form-item label="审批建议" prop="reason">
-            <el-input type="textarea" v-model="auditForms[index].reason" placeholder="请输入审批建议" />
+          <el-form-item label="审批建议" prop="comment">
+            <el-input type="textarea" v-model="auditForms[index].comment" placeholder="请输入审批建议" />
+          </el-form-item>
+          <el-form-item label="动态审批" prop="addAssignees">
+            <el-input type="textarea" v-model="auditForms[index].addAssignees" placeholder="动态审批人" />
           </el-form-item>
         </el-form>
         <div style="margin-left: 10%; margin-bottom: 20px; font-size: 14px;">
@@ -66,8 +69,8 @@
                 <label v-if="item.endTime" style="color:#8a909c;font-weight: normal"> {{ parseTime(item.endTime) }}</label>
                 <label v-if="item.durationInMillis" style="margin-left: 30px;font-weight: normal">耗时：</label>
                 <label v-if="item.durationInMillis" style="color:#8a909c;font-weight: normal"> {{ getDateStar(item.durationInMillis) }} </label>
-                <p v-if="item.reason">
-                  <el-tag :type="getTimelineItemType(item)">{{ item.reason }}</el-tag>
+                <p v-if="item.comment">
+                  <el-tag :type="getTimelineItemType(item)">{{ item.comment }}</el-tag>
                 </p>
               </el-card>
             </el-timeline-item>
@@ -148,7 +151,7 @@ export default {
       runningTasks: [],
       auditForms: [],
       auditRule: {
-        reason: [{ required: true, message: "审批建议不能为空", trigger: "blur" }],
+        comment: [{ required: true, message: "审批建议不能为空", trigger: "blur" }],
       },
 
       // 转派审批人
@@ -259,7 +262,7 @@ export default {
           }
           this.runningTasks.push({...task});
           this.auditForms.push({
-            reason: ''
+            comment: ''
           })
         });
 
@@ -349,9 +352,17 @@ export default {
         if (!valid) {
           return;
         }
+        let assignArray =  [];
+        let inputAddAssignees = this.auditForms[index].addAssignees;
+        if(!!inputAddAssignees) {
+          assignArray = inputAddAssignees.split(",");
+          console.log(assignArray)
+        }
+
         const data = {
           id: task.id,
-          reason: this.auditForms[index].reason
+          comment: this.auditForms[index].comment,
+          addAssignees: assignArray
         }
         if (pass) {
           approveTask(data).then(response => {
